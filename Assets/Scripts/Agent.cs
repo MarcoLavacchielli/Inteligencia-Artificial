@@ -90,11 +90,13 @@ public class Agent : MonoBehaviour
 
     void SearchForFood()
     {
-        // Lógica para buscar comida en el escenario
-        // Puedes usar raycasts, colisionadores, o algún otro método
-        // Asigna el objeto comida al atributo 'foodTarget'
-        // Por ejemplo, puedes hacer algo como:
-        foodTarget = GameObject.FindWithTag("Food").transform;
+        if (foodTarget == null)
+        {
+            // Lógica para buscar comida en el escenario
+            // Asigna el objeto comida al atributo 'foodTarget'
+            // Por ejemplo, puedes hacer algo como:
+            foodTarget = GameObject.FindWithTag("Food").transform;
+        }
     }
 
     void FlockingBehavior()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HunterNPC : MonoBehaviour
 {
+    public GameObject foodPrefab;
     // Atributos del NPC cazador
     [SerializeField] private float energy = 100.0f;
     [SerializeField] private float speed = 5.0f;  // Agrega la velocidad aquí
@@ -84,17 +85,21 @@ public class HunterNPC : MonoBehaviour
                 // Otros casos según necesidades
         }
     }
+    void SpawnFood()
+    {
+        Vector3 spawnPosition = new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f));
+        Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
+    }
 
     void RestBehavior()
     {
-        // Lógica para el estado de descanso
-        // Reduce la energía con el tiempo y, cuando llega a cero, vuelve a patrullar
-        energy -= Time.deltaTime;
+        // Lógica de descanso...
 
         if (energy <= 0)
         {
             currentState = HunterState.Patrol;
-            energy = 100.0f;  // Reiniciar la energía al llegar a cero
+            energy = 100.0f;
+            SpawnFood(); // Llama al método para spawnear comida
         }
     }
 
