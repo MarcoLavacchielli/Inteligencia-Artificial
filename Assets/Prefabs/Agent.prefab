@@ -112,5 +112,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   rotationSpeed: 2
-  visionRadius: 10
+  visionRadius: 5
   arriveRadius: 2
