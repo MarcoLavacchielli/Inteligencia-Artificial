@@ -237,7 +237,7 @@ MonoBehaviour:
   energy: 100
   speed: 5
   patrolSpeed: 3
-  visionRadius: 5
+  visionRadius: 30
   patrolWaypoints:
   - {fileID: 377661596}
   - {fileID: 1132084465}

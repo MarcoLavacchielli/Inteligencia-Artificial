@@ -31,7 +31,6 @@ public class HunterNPC : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
         // Actualizar el estado del NPC cazador
         UpdateState();
 
