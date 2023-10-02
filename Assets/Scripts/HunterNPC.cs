@@ -9,6 +9,10 @@ public class HunterNPC : MonoBehaviour
     [SerializeField] private float speed = 5.0f;  // Agrega la velocidad aquí
     [SerializeField] private float patrolSpeed = 3.0f;  // Velocidad durante la patrulla
     [SerializeField] private float visionRadius = 5.0f;
+    [SerializeField] private Transform[] patrolWaypoints;
+    private int currentWaypointIndex = 0;
+    private float restTimer = 0.0f;
+    [SerializeField] private float restDuration = 5.0f;
     // Otros atributos según necesidades
 
     // Estados del NPC cazador
@@ -39,16 +43,26 @@ public class HunterNPC : MonoBehaviour
     void UpdateState()
     {
         // Lógica para cambiar el estado según condiciones
-        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+        restTimer += Time.deltaTime;
 
-        foreach (GameObject agent in agents)
+        if (restTimer >= restDuration)
         {
-            float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+            currentState = HunterState.Rest;
+            restTimer = 0.0f;  // Reiniciar el temporizador al cambiar al estado de descanso
+        }
+        else
+        {
+            GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
 
-            if (distanceToAgent < visionRadius)
+            foreach (GameObject agent in agents)
             {
-                currentState = HunterState.Chase;
-                return;
+                float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+                if (distanceToAgent < visionRadius)
+                {
+                    currentState = HunterState.Chase;
+                    return;
+                }
             }
         }
     }
@@ -87,7 +101,23 @@ public class HunterNPC : MonoBehaviour
     void PatrolBehavior()
     {
         // Lógica para el estado de patrulla
-        transform.Translate(Vector3.forward * patrolSpeed * Time.deltaTime);
+        if (patrolWaypoints.Length == 0)
+        {
+            Debug.LogError("No se han asignado waypoints de patrulla al cazador.");
+            return;
+        }
+
+        // Moverse hacia el waypoint actual
+        Vector3 direction = (patrolWaypoints[currentWaypointIndex].position - transform.position).normalized;
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        // Verificar si ha llegado al waypoint actual
+        float distanceToWaypoint = Vector3.Distance(transform.position, patrolWaypoints[currentWaypointIndex].position);
+        if (distanceToWaypoint < 1.0f)
+        {
+            // Cambiar al siguiente waypoint
+            currentWaypointIndex = (currentWaypointIndex + 1) % patrolWaypoints.Length;
+        }
     }
 
     void ChaseBehavior()
@@ -142,5 +172,6 @@ public class HunterNPC : MonoBehaviour
     void VisualizeBehavior()
     {
         // Lógica para visualizar el comportamiento en la escena
+        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.red);  // Visualizar rango de visión
     }
 }

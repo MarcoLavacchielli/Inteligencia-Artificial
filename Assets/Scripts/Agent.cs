@@ -113,23 +113,81 @@ public class Agent : MonoBehaviour
     }
     Vector3 CalculateAlignment()
     {
-        // Lógica para calcular la alineación con otros agentes
-        // Devuelve la dirección promedio de los vecinos
-        return Vector3.zero;  // Implementa tu lógica aquí
+        Vector3 averageAlignment = Vector3.zero;
+        int neighborCount = 0;
+
+        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+
+        foreach (GameObject agent in agents)
+        {
+            float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+            if (distanceToAgent < visionRadius && agent != this.gameObject)
+            {
+                averageAlignment += agent.transform.forward;
+                neighborCount++;
+            }
+        }
+
+        if (neighborCount > 0)
+        {
+            averageAlignment /= neighborCount;
+            averageAlignment.Normalize();
+        }
+
+        return averageAlignment;
     }
 
     Vector3 CalculateCohesion()
     {
-        // Lógica para calcular la cohesión con otros agentes
-        // Devuelve la dirección hacia el centro de masa de los vecinos
-        return Vector3.zero;  // Implementa tu lógica aquí
+        Vector3 centerOfMass = Vector3.zero;
+        int neighborCount = 0;
+
+        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+
+        foreach (GameObject agent in agents)
+        {
+            float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+            if (distanceToAgent < visionRadius && agent != this.gameObject)
+            {
+                centerOfMass += agent.transform.position;
+                neighborCount++;
+            }
+        }
+
+        if (neighborCount > 0)
+        {
+            centerOfMass /= neighborCount;
+            return Seek(centerOfMass);
+        }
+
+        return Vector3.zero;
     }
 
     Vector3 CalculateSeparation()
     {
-        // Lógica para calcular la separación de otros agentes
-        // Devuelve la dirección alejándose de los vecinos cercanos
-        return Vector3.zero;  // Implementa tu lógica aquí
+        Vector3 separation = Vector3.zero;
+
+        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+
+        foreach (GameObject agent in agents)
+        {
+            float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+            if (distanceToAgent < visionRadius && agent != this.gameObject)
+            {
+                separation += (transform.position - agent.transform.position) / distanceToAgent;
+            }
+        }
+
+        return separation.normalized;
+    }
+
+    Vector3 Seek(Vector3 targetPosition)
+    {
+        Vector3 desiredDirection = (targetPosition - transform.position).normalized;
+        return desiredDirection;
     }
 
     void EvadeBehavior()
@@ -183,5 +241,6 @@ public class Agent : MonoBehaviour
     void VisualizeBehavior()
     {
         // Lógica para visualizar el comportamiento en la escena
+        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.green);  // Visualizar rango de visión
     }
 }
