@@ -114,3 +114,6 @@ MonoBehaviour:
   rotationSpeed: 2
   visionRadius: 5
   arriveRadius: 2
+  currentState: 0
+  target: {fileID: 0}
+  foodTarget: {fileID: 8674065770445480842, guid: 0808e21b378093642a735516de6d2fdf, type: 3}

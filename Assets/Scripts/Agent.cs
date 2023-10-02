@@ -5,22 +5,22 @@ using UnityEngine;
 public class Agent : MonoBehaviour
 {
     // Atributos del agente
-    [SerializeField] private float speed = 5.0f;
-    [SerializeField] private float rotationSpeed = 2.0f;
-    [SerializeField] private float visionRadius = 5.0f;
-    [SerializeField] private float arriveRadius = 2.0f;
+    public float speed = 5.0f;
+    public float rotationSpeed = 2.0f;
+    public float visionRadius = 5.0f;
+    public float arriveRadius = 2.0f;
     // Otros atributos según necesidades
 
     // Estados del agente
     public enum AgentState { Flocking, SeekingFood, Evading };
-    private AgentState currentState;
-    private Transform target;
-    private Transform foodTarget;
+    public AgentState currentState;
+    public Transform target;
+    public Transform foodTarget;
 
     void Start()
     {
         // Inicializar estado y otros atributos
-        currentState = AgentState.Flocking;
+        //currentState = AgentState.Flocking;
     }
 
     void Update()
@@ -95,7 +95,11 @@ public class Agent : MonoBehaviour
             // Lógica para buscar comida en el escenario
             // Asigna el objeto comida al atributo 'foodTarget'
             // Por ejemplo, puedes hacer algo como:
-            foodTarget = GameObject.FindWithTag("Food").transform;
+            GameObject foodObject = GameObject.FindWithTag("Food");
+            if (foodObject != null)
+            {
+                foodTarget = foodObject.transform;
+            }
         }
     }
 

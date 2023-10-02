@@ -6,35 +6,33 @@ public class HunterNPC : MonoBehaviour
 {
     public GameObject foodPrefab;
     // Atributos del NPC cazador
-    [SerializeField] private float energy = 100.0f;
-    [SerializeField] private float speed = 5.0f;  // Agrega la velocidad aquí
-    [SerializeField] private float patrolSpeed = 3.0f;  // Velocidad durante la patrulla
-    [SerializeField] private float visionRadius = 5.0f;
-    [SerializeField] private Transform[] patrolWaypoints;
-    private int currentWaypointIndex = 0;
-    private float restTimer = 0.0f;
-    [SerializeField] private float restDuration = 5.0f;
+    public float energy = 100.0f;
+    public float speed = 5.0f;  // Agrega la velocidad aquí
+    public float patrolSpeed = 3.0f;  // Velocidad durante la patrulla
+    public float visionRadius = 5.0f;
+    public Transform[] patrolWaypoints;
+    public int currentWaypointIndex = 0;
+    public float restTimer = 0.0f;
+    public float restDuration = 5.0f;
     // Otros atributos según necesidades
 
     // Estados del NPC cazador
     public enum HunterState { Rest, Patrol, Chase };
-    private HunterState currentState;
+    public HunterState currentState;
 
     // Objetivo actual del NPC cazador
-    private Transform target;
+    public Transform target;
 
     void Start()
     {
         // Inicializar estado y otros atributos
-        currentState = HunterState.Rest;
+        //currentState = HunterState.Rest;
     }
 
     void Update()
     {
         // Actualizar el estado del NPC cazador
         UpdateState();
-
-        // Ejecutar comportamiento según el estado
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         VisualizeBehavior();
