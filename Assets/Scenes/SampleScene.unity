@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 8674065770445480846, guid: 0808e21b378093642a735516de6d2fdf, type: 3}
-  energy: 100
+  energy: 30
   speed: 5
   patrolSpeed: 3
   visionRadius: 10
@@ -245,8 +245,8 @@ MonoBehaviour:
   - {fileID: 271698074}
   currentWaypointIndex: 0
   restTimer: 0
-  restDuration: 20
-  currentState: 2
+  restDuration: 5
+  currentState: 1
   target: {fileID: 0}
 --- !u!1 &271698073
 GameObject:
@@ -272,7 +272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271698073}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20, y: 0.5, z: 80}
+  m_LocalPosition: {x: -20, y: 0.5, z: 100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -639,7 +639,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792820352}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 20, y: 0.5, z: 80}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -6,7 +6,7 @@ public class HunterNPC : MonoBehaviour
 {
     public GameObject foodPrefab;
     // Atributos del NPC cazador
-    public float energy = 100.0f;
+    public float energy = 30f;
     public float speed = 5.0f;  // Agrega la velocidad aquí
     public float patrolSpeed = 3.0f;  // Velocidad durante la patrulla
     public float visionRadius = 5.0f;
@@ -40,15 +40,19 @@ public class HunterNPC : MonoBehaviour
 
     void UpdateState()
     {
-        // Lógica para cambiar el estado según condiciones
         restTimer += Time.deltaTime;
 
-        if (restTimer >= restDuration)
+        if (currentState == HunterState.Rest)
         {
-            currentState = HunterState.Rest;
-            restTimer = 0.0f;  // Reiniciar el temporizador al cambiar al estado de descanso
+            if (restTimer >= restDuration)
+            {
+                currentState = HunterState.Patrol;
+                restTimer = 0.0f;  // Reiniciar el temporizador al cambiar al estado de patrulla
+                energy = 30f;
+                SpawnFood(); // Llama al método para spawnear comida
+            }
         }
-        else
+        else if (currentState == HunterState.Patrol)
         {
             GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
 
@@ -61,6 +65,16 @@ public class HunterNPC : MonoBehaviour
                     currentState = HunterState.Chase;
                     return;
                 }
+            }
+        }
+        else if (currentState == HunterState.Chase)
+        {
+            // Lógica adicional para restar energía durante la persecución si es necesario
+            // Puedes agregar la lógica según tus requisitos aquí
+            energy -= Time.deltaTime;
+            if(energy < 0)
+            {
+                currentState = HunterState.Rest;
             }
         }
     }
