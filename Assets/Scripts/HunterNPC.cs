@@ -5,33 +5,25 @@ using UnityEngine;
 public class HunterNPC : MonoBehaviour
 {
     public GameObject foodPrefab;
-    // Atributos del NPC cazador
-    public float energy = 30f;
-    public float speed = 5.0f;  // Agrega la velocidad aquí
-    public float patrolSpeed = 3.0f;  // Velocidad durante la patrulla
+    public float energy = 100.0f;
+    public float speed = 5.0f;
+    public float patrolSpeed = 3.0f;
     public float visionRadius = 5.0f;
     public Transform[] patrolWaypoints;
     public int currentWaypointIndex = 0;
     public float restTimer = 0.0f;
     public float restDuration = 5.0f;
-    // Otros atributos según necesidades
 
-    // Estados del NPC cazador
     public enum HunterState { Rest, Patrol, Chase };
     public HunterState currentState;
 
-    // Objetivo actual del NPC cazador
-    public Transform target;
-
     void Start()
     {
-        // Inicializar estado y otros atributos
-        //currentState = HunterState.Rest;
+        currentState = HunterState.Rest;
     }
 
     void Update()
     {
-        // Actualizar el estado del NPC cazador
         UpdateState();
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
@@ -40,62 +32,71 @@ public class HunterNPC : MonoBehaviour
 
     void UpdateState()
     {
-        restTimer += Time.deltaTime;
-
-        if (currentState == HunterState.Rest)
+        switch (currentState)
         {
-            if (restTimer >= restDuration)
-            {
-                currentState = HunterState.Patrol;
-                restTimer = 0.0f;  // Reiniciar el temporizador al cambiar al estado de patrulla
-                energy = 30f;
-                SpawnFood(); // Llama al método para spawnear comida
-            }
-        }
-        else if (currentState == HunterState.Patrol)
-        {
-            GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
-
-            foreach (GameObject agent in agents)
-            {
-                float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
-
-                if (distanceToAgent < visionRadius)
+            case HunterState.Rest:
+                restTimer += Time.deltaTime;
+                if (restTimer >= restDuration)
                 {
-                    currentState = HunterState.Chase;
-                    return;
+                    restTimer = 0.0f;
+                    currentState = HunterState.Patrol;
                 }
-            }
-        }
-        else if (currentState == HunterState.Chase)
-        {
-            // Lógica adicional para restar energía durante la persecución si es necesario
-            // Puedes agregar la lógica según tus requisitos aquí
-            energy -= Time.deltaTime;
-            if(energy < 0)
-            {
-                currentState = HunterState.Rest;
-            }
+                break;
+
+            case HunterState.Patrol:
+                energy -= 5.0f * Time.deltaTime;
+
+                if (energy <= 0)
+                {
+                    currentState = HunterState.Rest;
+                    energy = 100.0f;
+                    SpawnFood();
+                }
+
+                GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+                foreach (GameObject agent in agents)
+                {
+                    float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+                    if (distanceToAgent < visionRadius)
+                    {
+                        currentState = HunterState.Chase;
+                        break;  // Salir del bucle ya que ya estamos persiguiendo a uno
+                    }
+                }
+                break;
+
+            case HunterState.Chase:
+                energy -= 10.0f * Time.deltaTime;
+
+                if (energy <= 0)
+                {
+                    currentState = HunterState.Rest;
+                    energy = 100.0f;
+                    SpawnFood();
+                }
+                break;
         }
     }
 
     void ExecuteStateBehavior()
     {
-        // Ejecutar comportamiento según el estado actual
         switch (currentState)
         {
             case HunterState.Rest:
                 RestBehavior();
                 break;
+
             case HunterState.Patrol:
                 PatrolBehavior();
                 break;
+
             case HunterState.Chase:
                 ChaseBehavior();
                 break;
-                // Otros casos según necesidades
         }
     }
+
     void SpawnFood()
     {
         Vector3 spawnPosition = new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f));
@@ -104,42 +105,29 @@ public class HunterNPC : MonoBehaviour
 
     void RestBehavior()
     {
-        // Lógica de descanso...
-
-        if (energy <= 0)
-        {
-            currentState = HunterState.Patrol;
-            energy = 100.0f;
-            SpawnFood(); // Llama al método para spawnear comida
-        }
+        // LÃ³gica de descanso...
     }
 
     void PatrolBehavior()
     {
-        // Lógica para el estado de patrulla
         if (patrolWaypoints.Length == 0)
         {
             Debug.LogError("No se han asignado waypoints de patrulla al cazador.");
             return;
         }
 
-        // Moverse hacia el waypoint actual
         Vector3 direction = (patrolWaypoints[currentWaypointIndex].position - transform.position).normalized;
-        transform.Translate(direction * speed * Time.deltaTime);
+        transform.Translate(direction * patrolSpeed * Time.deltaTime);
 
-        // Verificar si ha llegado al waypoint actual
         float distanceToWaypoint = Vector3.Distance(transform.position, patrolWaypoints[currentWaypointIndex].position);
         if (distanceToWaypoint < 1.0f)
         {
-            // Cambiar al siguiente waypoint
             currentWaypointIndex = (currentWaypointIndex + 1) % patrolWaypoints.Length;
         }
     }
 
     void ChaseBehavior()
     {
-        // Lógica para el estado de persecución
-
         GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
 
         foreach (GameObject agent in agents)
@@ -148,22 +136,20 @@ public class HunterNPC : MonoBehaviour
 
             if (distanceToAgent < visionRadius)
             {
-                // El agente está en el rango de visión, perseguir
                 Vector3 chaseDirection = Pursuit(agent.transform.position);
                 transform.Translate(chaseDirection * speed * Time.deltaTime);
             }
         }
     }
+
     Vector3 Pursuit(Vector3 agentPosition)
     {
-        // Lógica para calcular la dirección de persecución (pursuit)
         Vector3 direction = (agentPosition - transform.position).normalized;
         return direction;
     }
 
     void ApplyObstacleAvoidance()
     {
-        // Lógica para obstacle avoidance (steering behavior)
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
@@ -171,7 +157,6 @@ public class HunterNPC : MonoBehaviour
         {
             if (hit.collider.CompareTag("Obstacle"))
             {
-                // Hay un obstáculo en frente, ajustar la dirección
                 Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
                 transform.Translate(avoidanceDirection * speed * Time.deltaTime);
             }
@@ -180,14 +165,13 @@ public class HunterNPC : MonoBehaviour
 
     Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
     {
-        // Lógica para calcular la dirección de evasión del obstáculo
         Vector3 avoidanceDirection = (transform.position - obstaclePosition).normalized;
         return avoidanceDirection;
     }
 
     void VisualizeBehavior()
     {
-        // Lógica para visualizar el comportamiento en la escena
-        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.red);  // Visualizar rango de visión
+        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.red);
     }
 }
+

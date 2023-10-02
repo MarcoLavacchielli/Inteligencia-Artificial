@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 8674065770445480846, guid: 0808e21b378093642a735516de6d2fdf, type: 3}
-  energy: 30
+  energy: 100
   speed: 5
   patrolSpeed: 3
   visionRadius: 10
@@ -247,7 +247,6 @@ MonoBehaviour:
   restTimer: 0
   restDuration: 5
   currentState: 1
-  target: {fileID: 0}
 --- !u!1 &271698073
 GameObject:
   m_ObjectHideFlags: 0
