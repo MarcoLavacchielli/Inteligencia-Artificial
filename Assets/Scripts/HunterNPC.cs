@@ -99,7 +99,7 @@ public class HunterNPC : MonoBehaviour
 
     void SpawnFood()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f));
+        Vector3 spawnPosition = new Vector3(Random.Range(-100f, 100f), 0f, Random.Range(-100f, 100f));
         Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 
