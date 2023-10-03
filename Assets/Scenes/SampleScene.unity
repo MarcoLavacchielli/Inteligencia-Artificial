@@ -237,7 +237,7 @@ MonoBehaviour:
   energy: 100
   speed: 6
   patrolSpeed: 5
-  visionRadius: 30
+  visionRadius: 20
   patrolWaypoints:
   - {fileID: 377661596}
   - {fileID: 1132084465}
@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6852697412409321321, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -29.7
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 6852697412409321321, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: m_LocalRotation.w

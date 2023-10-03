@@ -241,27 +241,29 @@ public class Agent : MonoBehaviour
 
     void ApplyObstacleAvoidance()
     {
-        Ray ray = new Ray(transform.position, transform.forward);
-        RaycastHit hit;
+        Collider[] colliders = Physics.OverlapSphere(transform.position, visionRadius);
 
-        if (Physics.Raycast(ray, out hit, visionRadius))
+        foreach (var collider in colliders)
         {
-            if (hit.collider.CompareTag("Obstacle"))
+            if (collider.CompareTag("Obstacle"))
             {
-                Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
+                Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
                 transform.Translate(avoidanceDirection * speed * Time.deltaTime);
+                break; // Detenerse después de evitar el primer obstáculo
             }
         }
     }
 
     Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
     {
-        Vector3 avoidanceDirection = (transform.position - obstaclePosition).normalized;
+        Vector3 toObstacle = obstaclePosition - transform.position;
+        Vector3 avoidanceDirection = Vector3.Cross(Vector3.up, toObstacle.normalized).normalized;
+
         return avoidanceDirection;
     }
 
     void VisualizeBehavior()
     {
-        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.green);
+        //Debug.DrawSphere(transform.position, visionRadius, Color.green);
     }
 }
