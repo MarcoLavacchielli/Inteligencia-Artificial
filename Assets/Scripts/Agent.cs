@@ -4,24 +4,14 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    // Atributos del agente
     public float speed = 5.0f;
-    public float rotationSpeed = 2.0f;
     public float visionRadius = 5.0f;
-    public float arriveRadius = 2.0f;
-    // Otros atributos según necesidades
 
-    // Estados del agente
     public enum AgentState { Flocking, SeekingFood, Evading };
     public AgentState currentState;
-    public Transform target;
     public Transform foodTarget;
-
-    void Start()
-    {
-        // Inicializar estado y otros atributos
-        //currentState = AgentState.Flocking;
-    }
+    public float evadeDuration = 2.0f;
+    private float evadeTimer = 0.0f;
 
     void Update()
     {
@@ -29,26 +19,70 @@ public class Agent : MonoBehaviour
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         VisualizeBehavior();
+
+        GameObject[] objetosDeComida = GameObject.FindGameObjectsWithTag("Food");
+
+        if (objetosDeComida.Length > 0 && currentState != Agent.AgentState.Evading)
+        {
+            // Se encontró al menos un objeto con el tag "Food"
+            //Debug.Log("¡Se detectó comida en la escena!");
+            currentState = AgentState.SeekingFood;
+        }
+        else if ( currentState != Agent.AgentState.Evading)
+        {
+            currentState = AgentState.Flocking;
+        }
     }
 
     void UpdateState()
     {
-        // Lógica para cambiar el estado según condiciones
-        if (foodTarget != null)
+        GameObject[] hunters = GameObject.FindGameObjectsWithTag("Hunter");
+
+        if (currentState != AgentState.Evading)
         {
-            float distanceToFood = Vector3.Distance(transform.position, foodTarget.position);
-            if (distanceToFood < arriveRadius)
+            // Cambio de Flocking a Evading si hay un cazador
+            foreach (GameObject hunter in hunters)
             {
-                // Cuando llega a la comida, cambia al estado de flocking
+                float distanceToHunter = Vector3.Distance(transform.position, hunter.transform.position);
+                if (distanceToHunter < visionRadius)
+                {
+                    currentState = AgentState.Evading;
+                    evadeTimer = evadeDuration;
+                    break;
+                }
+            }
+        }
+
+        // Si está evadiendo, verificar si ha pasado el tiempo de evasión
+        if (currentState == AgentState.Evading)
+        {
+            evadeTimer -= Time.deltaTime;
+            if (evadeTimer <= 0.0f)
+            {
                 currentState = AgentState.Flocking;
-                foodTarget = null;
+            }
+        }
+
+        // Cambio de Evading a Flocking si ya no hay cazadores en el rango
+        if (currentState == AgentState.Evading && hunters.Length == 0)
+        {
+            currentState = AgentState.Flocking;
+        }
+
+        // Cambio de Flocking a SeekingFood si hay comida en el mapa
+        if (currentState != AgentState.Evading && currentState != AgentState.SeekingFood && foodTarget == null)
+        {
+            GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
+            if (foodObjects.Length > 0)
+            {
+                foodTarget = foodObjects[Random.Range(0, foodObjects.Length)].transform;
+                currentState = AgentState.SeekingFood;
             }
         }
     }
 
     void ExecuteStateBehavior()
     {
-        // Ejecutar comportamiento según el estado actual
         switch (currentState)
         {
             case AgentState.Flocking:
@@ -60,63 +94,49 @@ public class Agent : MonoBehaviour
             case AgentState.Evading:
                 EvadeBehavior();
                 break;
-                // Otros casos según necesidades
         }
     }
+
     void SeekFoodBehavior()
     {
-        // Lógica para buscar y dirigirse hacia la comida
         if (foodTarget != null)
         {
             Vector3 direction = (foodTarget.position - transform.position).normalized;
             transform.Translate(direction * speed * Time.deltaTime);
 
-            // Verificar si ha llegado a la comida
             float distanceToTarget = Vector3.Distance(transform.position, foodTarget.position);
             if (distanceToTarget < 1.0f)
             {
-                // Lógica para cuando llega a la comida
-                Destroy(foodTarget.gameObject);  // O esconde la comida, dependiendo de tus necesidades
-                currentState = AgentState.Flocking;  // Cambia al estado de flocking
+                Destroy(foodTarget.gameObject);
                 foodTarget = null;
-            }
-        }
-        else
-        {
-            // Si no hay objetivo, buscar uno
-            SearchForFood();
-        }
-    }
 
-    void SearchForFood()
-    {
-        if (foodTarget == null)
-        {
-            // Lógica para buscar comida en el escenario
-            // Asigna el objeto comida al atributo 'foodTarget'
-            // Por ejemplo, puedes hacer algo como:
-            GameObject foodObject = GameObject.FindWithTag("Food");
-            if (foodObject != null)
-            {
-                foodTarget = foodObject.transform;
+                // Verifica si hay más alimentos después de destruir la comida actual
+                GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
+                if (foodObjects.Length > 0)
+                {
+                    foodTarget = foodObjects[Random.Range(0, foodObjects.Length)].transform;
+                    currentState = AgentState.SeekingFood;
+                }
+                else
+                {
+                    currentState = AgentState.Flocking;
+                }
             }
         }
     }
 
     void FlockingBehavior()
     {
-        // Lógica de flocking (Alignment, Cohesion, Separation)
-        // Lógica de flocking (Alignment, Cohesion, Separation)
         Vector3 alignment = CalculateAlignment();
         Vector3 cohesion = CalculateCohesion();
         Vector3 separation = CalculateSeparation();
 
-        // Aplicar fuerzas de flocking
         Vector3 totalForce = alignment + cohesion + separation;
         totalForce = totalForce.normalized * speed;
 
         transform.Translate(totalForce * Time.deltaTime);
     }
+
     Vector3 CalculateAlignment()
     {
         Vector3 averageAlignment = Vector3.zero;
@@ -198,7 +218,7 @@ public class Agent : MonoBehaviour
 
     void EvadeBehavior()
     {
-        // Lógica para aplicar evade cuando haya un NPC cazador cerca
+        // Logic for applying evade when there is a hunter nearby
         GameObject[] hunters = GameObject.FindGameObjectsWithTag("Hunter");
 
         foreach (GameObject hunter in hunters)
@@ -207,22 +227,20 @@ public class Agent : MonoBehaviour
 
             if (distanceToHunter < visionRadius)
             {
-                // El cazador está en el rango de visión, aplicar evade
                 Vector3 evadeDirection = Evade(hunter.transform.position);
                 transform.Translate(evadeDirection * speed * Time.deltaTime);
             }
         }
     }
+
     Vector3 Evade(Vector3 hunterPosition)
     {
-        // Lógica para calcular la dirección de evade
         Vector3 direction = (transform.position - hunterPosition).normalized;
         return direction;
     }
 
     void ApplyObstacleAvoidance()
     {
-        // Lógica para obstacle avoidance (steering behavior)
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
@@ -230,7 +248,6 @@ public class Agent : MonoBehaviour
         {
             if (hit.collider.CompareTag("Obstacle"))
             {
-                // Hay un obstáculo en frente, ajustar la dirección
                 Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
                 transform.Translate(avoidanceDirection * speed * Time.deltaTime);
             }
@@ -239,14 +256,12 @@ public class Agent : MonoBehaviour
 
     Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
     {
-        // Lógica para calcular la dirección de evasión del obstáculo
         Vector3 avoidanceDirection = (transform.position - obstaclePosition).normalized;
         return avoidanceDirection;
     }
 
     void VisualizeBehavior()
     {
-        // Lógica para visualizar el comportamiento en la escena
-        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.green);  // Visualizar rango de visión
+        Debug.DrawRay(transform.position, transform.forward * visionRadius, Color.green);
     }
 }
