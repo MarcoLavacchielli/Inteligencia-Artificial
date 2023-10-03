@@ -108,6 +108,7 @@ public class Agent : MonoBehaviour
             if (distanceToTarget < 1.0f)
             {
                 Destroy(foodTarget.gameObject);
+                currentState = AgentState.Flocking;
                 foodTarget = null;
 
                 // Verifica si hay más alimentos después de destruir la comida actual
