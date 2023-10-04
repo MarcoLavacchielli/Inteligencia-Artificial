@@ -17,6 +17,11 @@ public class HunterNPC : MonoBehaviour
     public enum HunterState { Rest, Patrol, Chase };
     public HunterState currentState;
 
+    //materiales//
+    [SerializeField] private Material patrolMat;
+    [SerializeField] private Material restMat;
+    [SerializeField] private Material chaseMat;
+
     void Start()
     {
         currentState = HunterState.Rest;
@@ -28,6 +33,7 @@ public class HunterNPC : MonoBehaviour
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         VisualizeBehavior();
+        ChangeMaterial();
     }
 
     void UpdateState()
@@ -169,6 +175,23 @@ public class HunterNPC : MonoBehaviour
         Vector3 avoidanceDirection = Vector3.Cross(Vector3.up, toObstacle.normalized).normalized;
 
         return avoidanceDirection;
+    }
+
+    void ChangeMaterial()
+    {
+        Renderer render = GetComponent<Renderer>();
+        if (currentState == HunterState.Patrol)
+        {
+            render.material = patrolMat;
+        }
+        else if (currentState == HunterState.Rest)
+        {
+            render.material = restMat;
+        }
+        else if (currentState == HunterState.Chase)
+        {
+            render.material = chaseMat;
+        }
     }
 
     void VisualizeBehavior()

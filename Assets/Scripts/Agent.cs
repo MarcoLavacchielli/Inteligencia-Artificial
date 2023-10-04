@@ -13,12 +13,18 @@ public class Agent : MonoBehaviour
     public float evadeDuration = 2.0f;
     private float evadeTimer = 0.0f;
 
+    //materiales//
+    [SerializeField] private Material flockingMat;
+    [SerializeField] private Material seekingMat;
+    [SerializeField] private Material evadingMat;
+
     void Update()
     {
         UpdateState();
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         VisualizeBehavior();
+        MaterialChanger();
 
         GameObject[] objetosDeComida = GameObject.FindGameObjectsWithTag("Food");
 
@@ -37,6 +43,7 @@ public class Agent : MonoBehaviour
     void UpdateState()
     {
         GameObject[] hunters = GameObject.FindGameObjectsWithTag("Hunter");
+
 
         if (currentState != AgentState.Evading)
         {
@@ -261,6 +268,23 @@ public class Agent : MonoBehaviour
         Vector3 avoidanceDirection = Vector3.Cross(Vector3.up, toObstacle.normalized).normalized;
 
         return avoidanceDirection;
+    }
+
+    void MaterialChanger()
+    {
+        Renderer render = GetComponent<Renderer>();
+        if(currentState == AgentState.Flocking)
+        {
+            render.material = flockingMat;
+        } 
+        else if (currentState == AgentState.SeekingFood)
+        {
+            render.material = seekingMat;
+        }
+        else if (currentState == AgentState.Evading)
+        {
+            render.material = evadingMat;
+        }
     }
 
     void VisualizeBehavior()
