@@ -247,6 +247,9 @@ MonoBehaviour:
   restTimer: 0
   restDuration: 5
   currentState: 1
+  patrolMat: {fileID: 2100000, guid: 864e247b2fb1f214c8ebb1e548f65579, type: 2}
+  restMat: {fileID: 2100000, guid: 9ecf0c8c2d440004f82112915f7e1cde, type: 2}
+  chaseMat: {fileID: 2100000, guid: 40a0de8b1add03e4f98160da201028e0, type: 2}
 --- !u!1 &271698073
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +335,22 @@ PrefabInstance:
     - target: {fileID: 6852697412409321325, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
+      propertyPath: evadingMat
+      value: 
+      objectReference: {fileID: 2100000, guid: 568dc1b43d8cd0c43b0cb44d93768899, type: 2}
+    - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
+      propertyPath: seekingMat
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a6ca56768c4c3d4a8a25b7217363a42, type: 2}
+    - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
+      propertyPath: flockingMat
+      value: 
+      objectReference: {fileID: 2100000, guid: 9fdd6233a1b338d4e9fd3454162488ea, type: 2}
+    - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
+      propertyPath: visionRadius
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+
 
 public class Agent : MonoBehaviour
 {
@@ -23,7 +25,6 @@ public class Agent : MonoBehaviour
         UpdateState();
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
-        VisualizeBehavior();
         MaterialChanger();
 
         GameObject[] objetosDeComida = GameObject.FindGameObjectsWithTag("Food");
@@ -287,8 +288,9 @@ public class Agent : MonoBehaviour
         }
     }
 
-    void VisualizeBehavior()
+    void OnDrawGizmosSelected()
     {
-        //Debug.DrawSphere(transform.position, visionRadius, Color.green);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, visionRadius);
     }
 }

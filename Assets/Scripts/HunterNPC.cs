@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class HunterNPC : MonoBehaviour
 {
@@ -32,7 +33,6 @@ public class HunterNPC : MonoBehaviour
         UpdateState();
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
-        VisualizeBehavior();
         ChangeMaterial();
     }
 
@@ -194,9 +194,10 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    void VisualizeBehavior()
+    void OnDrawGizmosSelected()
     {
-        //Debug.DrawSphere(transform.position, visionRadius, Color.red);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, visionRadius);
     }
 }
 
