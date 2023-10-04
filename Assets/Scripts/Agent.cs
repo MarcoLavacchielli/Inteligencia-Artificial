@@ -43,7 +43,6 @@ public class Agent : MonoBehaviour
         if(currentState == Agent.AgentState.SeekingFood && foodTarget == null)
         {
             currentState = AgentState.Flocking;
-            Debug.Log("Keeeeewaaaaaaaa");
         }
     }
 
@@ -249,6 +248,14 @@ public class Agent : MonoBehaviour
             {
                 Vector3 evadeDirection = Evade(hunter.transform.position);
                 transform.Translate(evadeDirection * speed * Time.deltaTime);
+
+                // Verificar si el Hunter ha alcanzado al Agent
+                float distanceToAgent = Vector3.Distance(transform.position, hunter.transform.position);
+                if (distanceToAgent < 1.0f) // Ajusta el valor según sea necesario
+                {
+                    // Destruir el Agent al ser alcanzado por el Hunter
+                    Destroy(gameObject);
+                }
             }
         }
     }

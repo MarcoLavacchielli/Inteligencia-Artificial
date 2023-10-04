@@ -235,7 +235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 8674065770445480846, guid: 0808e21b378093642a735516de6d2fdf, type: 3}
   energy: 100
-  speed: 5
+  speed: 7
   patrolSpeed: 5
   visionRadius: 10
   patrolWaypoints:
