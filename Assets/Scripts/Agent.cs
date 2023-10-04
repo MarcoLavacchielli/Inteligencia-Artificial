@@ -35,9 +35,15 @@ public class Agent : MonoBehaviour
             //Debug.Log("¡Se detectó comida en la escena!");
             currentState = AgentState.SeekingFood;
         }
-        else if ( currentState != Agent.AgentState.Evading)
+        else if (currentState != Agent.AgentState.Evading)
         {
             currentState = AgentState.Flocking;
+        }
+
+        if(currentState == Agent.AgentState.SeekingFood && foodTarget == null)
+        {
+            currentState = AgentState.Flocking;
+            Debug.Log("Keeeeewaaaaaaaa");
         }
     }
 
@@ -131,6 +137,11 @@ public class Agent : MonoBehaviour
                     currentState = AgentState.Flocking;
                 }
             }
+        }
+
+        if(currentState == AgentState.SeekingFood && foodTarget == null)
+        {
+            currentState = AgentState.Flocking;
         }
     }
 
