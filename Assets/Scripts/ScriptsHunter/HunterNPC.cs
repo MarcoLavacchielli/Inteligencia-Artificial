@@ -2,7 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.VisualScripting;
 
+public interface IState
+{
+    public void EnterState(HunterNPC hunter);
+    public void ExitState(HunterNPC hunter);
+    public void UpdateState(HunterNPC hunter);
+}
 public class HunterNPC : MonoBehaviour
 {
     public GameObject foodPrefab;
@@ -18,26 +25,44 @@ public class HunterNPC : MonoBehaviour
     public enum HunterState { Rest, Patrol, Chase };
     public HunterState currentState;
 
-    //materiales//
     [SerializeField] private Material patrolMat;
     [SerializeField] private Material restMat;
     [SerializeField] private Material chaseMat;
 
+    private IState currentStateObject;
+
+    private Dictionary<HunterState, IState> stateDictionary = new Dictionary<HunterState, IState>();
+
     void Start()
     {
-        currentState = HunterState.Rest;
+        stateDictionary.Add(HunterState.Rest, new RestState());
+        stateDictionary.Add(HunterState.Patrol, new PatrolState());
+        stateDictionary.Add(HunterState.Chase, new ChaseState());
+
+        SetState(HunterState.Rest);
     }
 
-    void Update()
+    public void Update()
     {
-        UpdateState();
-        ExecuteStateBehavior();
+        currentStateObject.UpdateState(this);
         ApplyObstacleAvoidance();
         ChangeMaterial();
         CheckAndAdjustPosition();
     }
+    public void SetState(HunterState newState)
+    {
+        if (currentStateObject != null)
+        {
+            currentStateObject.ExitState(this);
+        }
 
-    void UpdateState()
+        currentStateObject = stateDictionary[newState];
+        currentState = newState;
+
+        currentStateObject.EnterState(this);
+    }
+
+    public void UpdateState()
     {
         switch (currentState)
         {
@@ -86,17 +111,16 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    void CheckAndAdjustPosition()
+    public void CheckAndAdjustPosition()
     {
         Vector3 newPosition = TeleportBox.UpdatePosition(transform.position);
         if (newPosition != transform.position)
         {
-            // Aplicar la nueva posición
             transform.position = newPosition;
         }
     }
 
-    void ExecuteStateBehavior()
+    public void ExecuteStateBehavior()
     {
         switch (currentState)
         {
@@ -114,18 +138,18 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    void SpawnFood()
+    public void SpawnFood()
     {
         Vector3 spawnPosition = new Vector3(Random.Range(-100f, 100f), 0f, Random.Range(-100f, 100f));
         Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 
-    void RestBehavior()
+    public void RestBehavior()
     {
         // Lógica de descanso...
     }
 
-    void PatrolBehavior()
+    public void PatrolBehavior()
     {
         if (patrolWaypoints.Length == 0)
         {
@@ -143,7 +167,7 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    void ChaseBehavior()
+    public void ChaseBehavior()
     {
         GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
 
@@ -159,13 +183,13 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    Vector3 Pursuit(Vector3 agentPosition)
+    public Vector3 Pursuit(Vector3 agentPosition)
     {
         Vector3 direction = (agentPosition - transform.position).normalized;
         return direction;
     }
 
-    void ApplyObstacleAvoidance()
+    public void ApplyObstacleAvoidance()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, visionRadius);
 
@@ -175,12 +199,12 @@ public class HunterNPC : MonoBehaviour
             {
                 Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
                 GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
-                break; // Detenerse después de evitar el primer obstáculo
+                break;
             }
         }
     }
 
-    Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
+    public Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
     {
         Vector3 toObstacle = obstaclePosition - transform.position;
         Vector3 avoidanceDirection = Vector3.Cross(Vector3.up, toObstacle.normalized).normalized;
@@ -188,7 +212,7 @@ public class HunterNPC : MonoBehaviour
         return avoidanceDirection;
     }
 
-    void ChangeMaterial()
+    public void ChangeMaterial()
     {
         Renderer render = GetComponent<Renderer>();
         if (currentState == HunterState.Patrol)
@@ -205,7 +229,7 @@ public class HunterNPC : MonoBehaviour
         }
     }
 
-    void OnDrawGizmosSelected()
+    public void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, visionRadius);
