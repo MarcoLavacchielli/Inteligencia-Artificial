@@ -34,6 +34,7 @@ public class HunterNPC : MonoBehaviour
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         ChangeMaterial();
+        CheckAndAdjustPosition();
     }
 
     void UpdateState()
@@ -82,6 +83,16 @@ public class HunterNPC : MonoBehaviour
                     SpawnFood();
                 }
                 break;
+        }
+    }
+
+    void CheckAndAdjustPosition()
+    {
+        Vector3 newPosition = TeleportBox.UpdatePosition(transform.position);
+        if (newPosition != transform.position)
+        {
+            // Aplicar la nueva posición
+            transform.position = newPosition;
         }
     }
 

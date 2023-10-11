@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.PackageManager;
 
 
 public class Agent : MonoBehaviour
@@ -15,7 +16,6 @@ public class Agent : MonoBehaviour
     public float evadeDuration = 2.0f;
     private float evadeTimer = 0.0f;
 
-    //materiales//
     [SerializeField] private Material flockingMat;
     [SerializeField] private Material seekingMat;
     [SerializeField] private Material evadingMat;
@@ -26,6 +26,7 @@ public class Agent : MonoBehaviour
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         MaterialChanger();
+        CheckAndAdjustPosition();
 
         GameObject[] objetosDeComida = GameObject.FindGameObjectsWithTag("Food");
 
@@ -91,6 +92,15 @@ public class Agent : MonoBehaviour
                 foodTarget = foodObjects[Random.Range(0, foodObjects.Length)].transform;
                 currentState = AgentState.SeekingFood;
             }
+        }
+    }
+    void CheckAndAdjustPosition()
+    {
+        Vector3 newPosition = TeleportBox.UpdatePosition(transform.position);
+        if (newPosition != transform.position)
+        {
+            // Aplicar la nueva posición
+            transform.position = newPosition;
         }
     }
 
