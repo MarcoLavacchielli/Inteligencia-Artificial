@@ -115,7 +115,7 @@ public class Agent : MonoBehaviour
         if (foodTarget != null)
         {
             Vector3 direction = (foodTarget.position - transform.position).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
+            GetComponent<Rigidbody>().velocity = direction * speed;
 
             float distanceToTarget = Vector3.Distance(transform.position, foodTarget.position);
             if (distanceToTarget < 1.0f)
@@ -124,7 +124,6 @@ public class Agent : MonoBehaviour
                 currentState = AgentState.Flocking;
                 foodTarget = null;
 
-                // Verifica si hay más alimentos después de destruir la comida actual
                 GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
                 if (foodObjects.Length > 0)
                 {
@@ -137,11 +136,6 @@ public class Agent : MonoBehaviour
                 }
             }
         }
-
-        if(currentState == AgentState.SeekingFood && foodTarget == null)
-        {
-            currentState = AgentState.Flocking;
-        }
     }
 
     void FlockingBehavior()
@@ -152,8 +146,7 @@ public class Agent : MonoBehaviour
 
         Vector3 totalForce = alignment + cohesion + separation;
         totalForce = totalForce.normalized * speed;
-
-        transform.Translate(totalForce * Time.deltaTime);
+        GetComponent<Rigidbody>().velocity = totalForce;
     }
 
     Vector3 CalculateAlignment()
@@ -247,7 +240,7 @@ public class Agent : MonoBehaviour
             if (distanceToHunter < visionRadius)
             {
                 Vector3 evadeDirection = Evade(hunter.transform.position);
-                transform.Translate(evadeDirection * speed * Time.deltaTime);
+                GetComponent<Rigidbody>().velocity = evadeDirection * speed;
 
                 // Verificar si el Hunter ha alcanzado al Agent
                 float distanceToAgent = Vector3.Distance(transform.position, hunter.transform.position);
@@ -275,7 +268,7 @@ public class Agent : MonoBehaviour
             if (collider.CompareTag("Obstacle"))
             {
                 Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
-                transform.Translate(avoidanceDirection * speed * Time.deltaTime);
+                GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
                 break; // Detenerse después de evitar el primer obstáculo
             }
         }

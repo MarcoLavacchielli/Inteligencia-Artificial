@@ -123,7 +123,7 @@ public class HunterNPC : MonoBehaviour
         }
 
         Vector3 direction = (patrolWaypoints[currentWaypointIndex].position - transform.position).normalized;
-        transform.Translate(direction * patrolSpeed * Time.deltaTime);
+        GetComponent<Rigidbody>().velocity = direction * patrolSpeed;
 
         float distanceToWaypoint = Vector3.Distance(transform.position, patrolWaypoints[currentWaypointIndex].position);
         if (distanceToWaypoint < 1.0f)
@@ -143,7 +143,7 @@ public class HunterNPC : MonoBehaviour
             if (distanceToAgent < visionRadius)
             {
                 Vector3 chaseDirection = Pursuit(agent.transform.position);
-                transform.Translate(chaseDirection * speed * Time.deltaTime);
+                GetComponent<Rigidbody>().velocity = chaseDirection * speed;
             }
         }
     }
@@ -163,7 +163,7 @@ public class HunterNPC : MonoBehaviour
             if (collider.CompareTag("Obstacle"))
             {
                 Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
-                transform.Translate(avoidanceDirection * speed * Time.deltaTime);
+                GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
                 break; // Detenerse después de evitar el primer obstáculo
             }
         }
