@@ -33,6 +33,9 @@ public class HunterNPC : MonoBehaviour
 
     private Dictionary<HunterState, IState> stateDictionary = new Dictionary<HunterState, IState>();
 
+    public float originalSpeed;
+    public float originalPatrolSpeed;
+
     void Start()
     {
         stateDictionary.Add(HunterState.Rest, new RestState());
@@ -146,7 +149,7 @@ public class HunterNPC : MonoBehaviour
 
     public void RestBehavior()
     {
-        // Lógica de descanso...
+        //
     }
 
     public void PatrolBehavior()
@@ -171,6 +174,8 @@ public class HunterNPC : MonoBehaviour
     {
         GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
 
+        bool isChasing = false;  // Variable para verificar si estamos persiguiendo activamente a un agente
+
         foreach (GameObject agent in agents)
         {
             float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
@@ -179,7 +184,16 @@ public class HunterNPC : MonoBehaviour
             {
                 Vector3 chaseDirection = Pursuit(agent.transform.position);
                 GetComponent<Rigidbody>().velocity = chaseDirection * speed;
+
+                isChasing = true;  // Estamos persiguiendo activamente a un agente
+                break;
             }
+        }
+
+        // Si no estamos persiguiendo a nadie, establecemos la velocidad en cero
+        if (!isChasing)
+        {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
     }
 

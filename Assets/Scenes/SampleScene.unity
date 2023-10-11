@@ -247,10 +247,12 @@ MonoBehaviour:
   currentWaypointIndex: 0
   restTimer: 0
   restDuration: 5
-  currentState: 1
+  currentState: 0
   patrolMat: {fileID: 2100000, guid: 864e247b2fb1f214c8ebb1e548f65579, type: 2}
   restMat: {fileID: 2100000, guid: 9ecf0c8c2d440004f82112915f7e1cde, type: 2}
   chaseMat: {fileID: 2100000, guid: 40a0de8b1add03e4f98160da201028e0, type: 2}
+  originalSpeed: 0
+  originalPatrolSpeed: 0
 --- !u!54 &168971715
 Rigidbody:
   m_ObjectHideFlags: 0
