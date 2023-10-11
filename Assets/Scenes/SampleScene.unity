@@ -236,8 +236,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 8674065770445480846, guid: 0808e21b378093642a735516de6d2fdf, type: 3}
   energy: 100
-  speed: 6
-  patrolSpeed: 5
+  speed: 9
+  patrolSpeed: 7
   visionRadius: 20
   patrolWaypoints:
   - {fileID: 377661596}
@@ -463,7 +463,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: speed
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: evadingMat
@@ -479,7 +479,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9fdd6233a1b338d4e9fd3454162488ea, type: 2}
     - target: {fileID: 6852697412409321334, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
       propertyPath: visionRadius
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 665f447c1f989f94fa920ecfa3db3c91, type: 3}
