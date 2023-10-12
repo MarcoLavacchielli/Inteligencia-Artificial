@@ -96,7 +96,17 @@ public class Agent : MonoBehaviour
             GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
             if (foodObjects.Length > 0)
             {
-                foodTarget = foodObjects[Random.Range(0, foodObjects.Length)].transform;
+                float minDistance = float.MaxValue;
+                foreach (GameObject foodObject in foodObjects)
+                {
+                    float distanceToFood = Vector3.Distance(transform.position, foodObject.transform.position);
+                    if (distanceToFood < minDistance)
+                    {
+                        minDistance = distanceToFood;
+                        foodTarget = foodObject.transform;
+                    }
+                }
+
                 currentState = AgentState.SeekingFood;
             }
         }
@@ -159,7 +169,7 @@ public class Agent : MonoBehaviour
                     currentState = AgentState.Flocking;
                 }
             }
-        }else if(foodTarget== null)
+        }else if(foodTarget== null && currentState == AgentState.SeekingFood)
         {
             SetAgentState(AgentState.Flocking);
             Agent[] allAgents = FindObjectsOfType<Agent>();
@@ -179,6 +189,16 @@ public class Agent : MonoBehaviour
         Vector3 totalForce = alignment + cohesion + separation;
         totalForce = totalForce.normalized * speed;
         GetComponent<Rigidbody>().velocity = totalForce;
+
+        if(foodTarget != null)
+        {
+            SetAgentState(AgentState.Flocking);
+            Agent[] allAgents = FindObjectsOfType<Agent>();
+            foreach (Agent agent in allAgents)
+            {
+                agent.SetAgentState(AgentState.SeekingFood);
+            }
+        }
     }
 
     Vector3 CalculateAlignment()
