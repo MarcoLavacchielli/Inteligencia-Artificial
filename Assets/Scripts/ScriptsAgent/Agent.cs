@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.PackageManager;
 
+public interface AState
+{
+    void EnterState(Agent agent);
+    void ExitState(Agent agent);
+    void UpdateState(Agent agent);
+}
 
 public class Agent : MonoBehaviour
 {
@@ -20,41 +24,47 @@ public class Agent : MonoBehaviour
     [SerializeField] private Material seekingMat;
     [SerializeField] private Material evadingMat;
 
+    private Dictionary<AgentState, AState> stateDictionary = new Dictionary<AgentState, AState>();
+    private AState currentStateObject;
+
+    void Start()
+    {
+        stateDictionary.Add(AgentState.Flocking, new FlockingState());
+        stateDictionary.Add(AgentState.SeekingFood, new SeekingFoodState());
+        stateDictionary.Add(AgentState.Evading, new EvadingState());
+
+        SetAgentState(AgentState.Flocking);
+    }
+
+    void SetAgentState(AgentState newState)
+    {
+        if (currentStateObject != null)
+        {
+            currentStateObject.ExitState(this);
+        }
+
+        currentStateObject = stateDictionary[newState];
+        currentState = newState;
+
+        currentStateObject.EnterState(this);
+    }
+
     void Update()
     {
-        UpdateState();
+        currentStateObject.UpdateState(this);
         ExecuteStateBehavior();
         ApplyObstacleAvoidance();
         MaterialChanger();
         CheckAndAdjustPosition();
-
-        GameObject[] objetosDeComida = GameObject.FindGameObjectsWithTag("Food");
-
-        if (objetosDeComida.Length > 0 && currentState != Agent.AgentState.Evading)
-        {
-            // Se encontró al menos un objeto con el tag "Food"
-            //Debug.Log("¡Se detectó comida en la escena!");
-            currentState = AgentState.SeekingFood;
-        }
-        else if (currentState != Agent.AgentState.Evading)
-        {
-            currentState = AgentState.Flocking;
-        }
-
-        if(currentState == Agent.AgentState.SeekingFood && foodTarget == null)
-        {
-            currentState = AgentState.Flocking;
-        }
+        UpdateState();
     }
 
-    void UpdateState()
+    public void UpdateState()
     {
         GameObject[] hunters = GameObject.FindGameObjectsWithTag("Hunter");
 
-
         if (currentState != AgentState.Evading)
         {
-            // Cambio de Flocking a Evading si hay un cazador
             foreach (GameObject hunter in hunters)
             {
                 float distanceToHunter = Vector3.Distance(transform.position, hunter.transform.position);
@@ -67,7 +77,6 @@ public class Agent : MonoBehaviour
             }
         }
 
-        // Si está evadiendo, verificar si ha pasado el tiempo de evasión
         if (currentState == AgentState.Evading)
         {
             evadeTimer -= Time.deltaTime;
@@ -77,13 +86,11 @@ public class Agent : MonoBehaviour
             }
         }
 
-        // Cambio de Evading a Flocking si ya no hay cazadores en el rango
         if (currentState == AgentState.Evading && hunters.Length == 0)
         {
             currentState = AgentState.Flocking;
         }
 
-        // Cambio de Flocking a SeekingFood si hay comida en el mapa
         if (currentState != AgentState.Evading && currentState != AgentState.SeekingFood && foodTarget == null)
         {
             GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
@@ -94,12 +101,12 @@ public class Agent : MonoBehaviour
             }
         }
     }
+
     void CheckAndAdjustPosition()
     {
         Vector3 newPosition = TeleportBox.UpdatePosition(transform.position);
         if (newPosition != transform.position)
         {
-            // Aplicar la nueva posición
             transform.position = newPosition;
         }
     }
@@ -120,7 +127,7 @@ public class Agent : MonoBehaviour
         }
     }
 
-    void SeekFoodBehavior()
+    public void SeekFoodBehavior()
     {
         if (foodTarget != null)
         {
@@ -148,7 +155,7 @@ public class Agent : MonoBehaviour
         }
     }
 
-    void FlockingBehavior()
+    public void FlockingBehavior()
     {
         Vector3 alignment = CalculateAlignment();
         Vector3 cohesion = CalculateCohesion();
@@ -238,9 +245,8 @@ public class Agent : MonoBehaviour
         return desiredDirection;
     }
 
-    void EvadeBehavior()
+    public void EvadeBehavior()
     {
-        // Logic for applying evade when there is a hunter nearby
         GameObject[] hunters = GameObject.FindGameObjectsWithTag("Hunter");
 
         foreach (GameObject hunter in hunters)
@@ -252,11 +258,9 @@ public class Agent : MonoBehaviour
                 Vector3 evadeDirection = Evade(hunter.transform.position);
                 GetComponent<Rigidbody>().velocity = evadeDirection * speed;
 
-                // Verificar si el Hunter ha alcanzado al Agent
                 float distanceToAgent = Vector3.Distance(transform.position, hunter.transform.position);
-                if (distanceToAgent < 1.0f) // Ajusta el valor según sea necesario
+                if (distanceToAgent < 1.0f)
                 {
-                    // Destruir el Agent al ser alcanzado por el Hunter
                     Destroy(gameObject);
                 }
             }
@@ -279,7 +283,7 @@ public class Agent : MonoBehaviour
             {
                 Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
                 GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
-                break; // Detenerse después de evitar el primer obstáculo
+                break;
             }
         }
     }
@@ -295,10 +299,10 @@ public class Agent : MonoBehaviour
     void MaterialChanger()
     {
         Renderer render = GetComponent<Renderer>();
-        if(currentState == AgentState.Flocking)
+        if (currentState == AgentState.Flocking)
         {
             render.material = flockingMat;
-        } 
+        }
         else if (currentState == AgentState.SeekingFood)
         {
             render.material = seekingMat;
