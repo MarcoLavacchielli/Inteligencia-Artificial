@@ -138,7 +138,14 @@ public class Agent : MonoBehaviour
             if (distanceToTarget < 1.0f)
             {
                 Destroy(foodTarget.gameObject);
-                currentState = AgentState.Flocking;
+                SetAgentState(AgentState.Flocking);
+                Agent[] allAgents = FindObjectsOfType<Agent>();
+                foreach (Agent agent in allAgents)
+                {
+                    agent.SetAgentState(AgentState.Flocking);
+                }
+
+                //currentState = AgentState.Flocking;
                 foodTarget = null;
 
                 GameObject[] foodObjects = GameObject.FindGameObjectsWithTag("Food");
@@ -151,6 +158,14 @@ public class Agent : MonoBehaviour
                 {
                     currentState = AgentState.Flocking;
                 }
+            }
+        }else if(foodTarget== null)
+        {
+            SetAgentState(AgentState.Flocking);
+            Agent[] allAgents = FindObjectsOfType<Agent>();
+            foreach (Agent agent in allAgents)
+            {
+                agent.SetAgentState(AgentState.Flocking);
             }
         }
     }
