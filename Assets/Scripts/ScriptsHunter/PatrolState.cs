@@ -12,7 +12,6 @@ public class PatrolState : IState
 
     public void ExitState(HunterNPC hunter)
     {
-        // Lógica de salida del estado de patrulla
     }
 
     public void UpdateState(HunterNPC hunter)

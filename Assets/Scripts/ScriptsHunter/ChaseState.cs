@@ -7,12 +7,10 @@ public class ChaseState : IState
 {
     public void EnterState(HunterNPC hunter)
     {
-        // Lógica de entrada al estado de persecución
     }
 
     public void ExitState(HunterNPC hunter)
     {
-        // Lógica de salida del estado de persecución
     }
 
     public void UpdateState(HunterNPC hunter)

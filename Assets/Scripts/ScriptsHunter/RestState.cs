@@ -16,7 +16,6 @@ public class RestState : IState
 
     public void ExitState(HunterNPC hunter)
     {
-        // Lógica de salida del estado de descanso
         hunter.speed = hunter.originalSpeed;
         hunter.patrolSpeed = hunter.originalPatrolSpeed;
     }

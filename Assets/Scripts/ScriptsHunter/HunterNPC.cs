@@ -192,7 +192,7 @@ public class HunterNPC : MonoBehaviour
             }
         }
 
-        // Si no estamos persiguiendo a nadie, establecemos la velocidad en cero
+        // 0 si esta vageando
         if (!isChasing)
         {
             GetComponent<Rigidbody>().velocity = Vector3.zero;

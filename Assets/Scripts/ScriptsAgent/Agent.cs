@@ -129,7 +129,6 @@ public class Agent : MonoBehaviour
             }
         }
 
-        // Aplicamos la fuerza de separación
         GetComponent<Rigidbody>().velocity += separationDirection.normalized * separationForce;
     }
     void CheckAndAdjustPosition()
@@ -287,8 +286,7 @@ public class Agent : MonoBehaviour
 
             if (distanceToAgent < visionRadius && agent != this.gameObject)
             {
-                // Modificar para mantener una distancia mínima
-                float separationDistance = 10f; // Ajusta según sea necesario
+                float separationDistance = 10f; // Ajustarlo si queda mal en la prueba
                 if (distanceToAgent < separationDistance)
                 {
                     separation += (transform.position - agent.transform.position) / distanceToAgent;
