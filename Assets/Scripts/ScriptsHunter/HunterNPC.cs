@@ -36,6 +36,8 @@ public class HunterNPC : MonoBehaviour
     public float originalSpeed;
     public float originalPatrolSpeed;
 
+    [SerializeField] private float RingSpawnFood;
+
     void Start()
     {
         stateDictionary.Add(HunterState.Rest, new RestState());
@@ -143,7 +145,7 @@ public class HunterNPC : MonoBehaviour
 
     public void SpawnFood()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-100f, 100f), 0f, Random.Range(-100f, 100f));
+        Vector3 spawnPosition = new Vector3(Random.Range(-RingSpawnFood, RingSpawnFood), 0f, Random.Range(-RingSpawnFood, RingSpawnFood));
         Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 

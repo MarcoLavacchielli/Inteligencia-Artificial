@@ -335,16 +335,11 @@ public class Agent : MonoBehaviour
 
     void ApplyObstacleAvoidance()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, visionRadius);
-
-        foreach (var collider in colliders)
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, visionRadius, LayerMask.GetMask("Obstacle")))
         {
-            if (collider.CompareTag("Obstacle"))
-            {
-                Vector3 avoidanceDirection = ObstacleAvoidance(collider.transform.position);
-                GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
-                break;
-            }
+            Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
+            GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
         }
     }
 
