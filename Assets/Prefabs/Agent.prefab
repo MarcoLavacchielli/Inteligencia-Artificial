@@ -116,6 +116,8 @@ MonoBehaviour:
   currentState: 0
   foodTarget: {fileID: 0}
   evadeDuration: 2
+  separationDistance: 5
+  separationForce: 5
   flockingMat: {fileID: 0}
   seekingMat: {fileID: 0}
   evadingMat: {fileID: 0}

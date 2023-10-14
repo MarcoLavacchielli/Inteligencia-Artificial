@@ -19,6 +19,8 @@ public class Agent : MonoBehaviour
     public Transform foodTarget;
     public float evadeDuration = 2.0f;
     private float evadeTimer = 0.0f;
+    public float separationDistance = 2.0f;
+    public float separationForce = 2.0f;
 
     [SerializeField] private Material flockingMat;
     [SerializeField] private Material seekingMat;
@@ -57,6 +59,7 @@ public class Agent : MonoBehaviour
         MaterialChanger();
         CheckAndAdjustPosition();
         UpdateState();
+        ApplySeparation();
     }
 
     public void UpdateState()
@@ -111,7 +114,24 @@ public class Agent : MonoBehaviour
             }
         }
     }
+    void ApplySeparation()
+    {
+        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
+        Vector3 separationDirection = Vector3.zero;
 
+        foreach (GameObject agent in agents)
+        {
+            float distanceToAgent = Vector3.Distance(transform.position, agent.transform.position);
+
+            if (distanceToAgent < separationDistance && agent != this.gameObject)
+            {
+                separationDirection += (transform.position - agent.transform.position) / distanceToAgent;
+            }
+        }
+
+        // Aplicamos la fuerza de separación
+        GetComponent<Rigidbody>().velocity += separationDirection.normalized * separationForce;
+    }
     void CheckAndAdjustPosition()
     {
         Vector3 newPosition = TeleportBox.UpdatePosition(transform.position);
@@ -267,7 +287,12 @@ public class Agent : MonoBehaviour
 
             if (distanceToAgent < visionRadius && agent != this.gameObject)
             {
-                separation += (transform.position - agent.transform.position) / distanceToAgent;
+                // Modificar para mantener una distancia mínima
+                float separationDistance = 10f; // Ajusta según sea necesario
+                if (distanceToAgent < separationDistance)
+                {
+                    separation += (transform.position - agent.transform.position) / distanceToAgent;
+                }
             }
         }
 
