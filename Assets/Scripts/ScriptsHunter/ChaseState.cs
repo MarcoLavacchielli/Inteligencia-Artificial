@@ -26,6 +26,8 @@ public class ChaseState : IState
 
     public void UpdateState(HunterNPC hunter)
     {
+        agentsToChase.RemoveAll(item => item == null); // esto elimina a los agentes de la lista para evitar ese error mugroso
+
         hunter.energy -= 10.0f * Time.deltaTime;
 
         if (hunter.energy <= 0)
@@ -43,12 +45,18 @@ public class ChaseState : IState
             {
                 Vector3 chaseDirection = hunter.Pursuit(agent.transform.position);
                 hunter.rb.velocity = chaseDirection * hunter.speed;
+
+                // Verificar si hay colisión con el agente
+                if (distanceToAgent < 1.0f) // Ajusta este valor según sea necesario
+                {
+                    // Destruir el agente al colisionar
+                    Object.Destroy(agent.gameObject);
+                }
             }
         }
     }
 
     public void ExecuteStateBehavior(HunterNPC hunter)
     {
-        // Implement chase behavior if needed
     }
 }

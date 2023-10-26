@@ -52,10 +52,14 @@ public class HunterNPC : MonoBehaviour
 
     public void Update()
     {
-        currentStateObject.UpdateState(this);
-        ApplyObstacleAvoidance();
-        ChangeMaterial(); // 1
+        ChangeMaterial(); // ya no tiene mas getcomponent
         CheckAndAdjustPosition();
+        ApplyObstacleAvoidance();
+    }
+
+    public void FixedUpdate() // esto maneja cositas de velocidad, creo
+    {
+        currentStateObject.UpdateState(this);
     }
 
     public void SetState(string newState)
