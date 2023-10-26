@@ -5,6 +5,9 @@ public class CapturePoints : MonoBehaviour
     [SerializeField]
     Agent agent;
 
+    [SerializeField]
+    SharedCast cast;
+
     [SerializeField, Min(0f)]
     float detectRadius = 16f, pickupRadius = 1f;
 
@@ -18,6 +21,8 @@ public class CapturePoints : MonoBehaviour
 
     private void Update()
     {
+        AvoidWalls();
+
         int len = Physics.OverlapSphereNonAlloc(transform.position, detectRadius, points, layerMask);
 
         if (len <= 0) return;
@@ -53,9 +58,25 @@ public class CapturePoints : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = new Color(.9f, .6f, 0);
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectRadius);
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, pickupRadius);
+    }
+
+    private void AvoidWalls()
+    {
+        
+            if (cast.IsHit)
+            {
+                var hit = cast.Hit;
+                var G = Vector3.Project(hit.point - transform.position, transform.forward) + transform.position;
+                var steering = G - hit.point;
+
+                Debug.DrawRay(hit.point, steering, Color.magenta);
+
+                agent.Accelerate(steering);
+            }
+        
     }
 }

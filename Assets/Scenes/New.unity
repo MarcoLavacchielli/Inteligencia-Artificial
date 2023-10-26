@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 186955920}
+  cast: {fileID: 0}
   detectRadius: 100
   pickupRadius: 0.5
   layerMask:
@@ -684,6 +685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 456549540}
+  cast: {fileID: 456549538}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -1034,6 +1036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 524704809}
+  cast: {fileID: 0}
   detectRadius: 100
   pickupRadius: 0.5
   layerMask:
@@ -1250,6 +1253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 724298450}
+  cast: {fileID: 0}
   detectRadius: 16
   pickupRadius: 1
   layerMask:
@@ -1439,6 +1443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 768186403}
+  cast: {fileID: 768186407}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -1644,6 +1649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 873237746}
+  cast: {fileID: 873237744}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -1943,6 +1949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1054490737}
+  cast: {fileID: 1054490735}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -2343,6 +2350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1428025566}
+  cast: {fileID: 0}
   detectRadius: 100
   pickupRadius: 0.5
   layerMask:
@@ -2649,6 +2657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1563581551}
+  cast: {fileID: 0}
   detectRadius: 100
   pickupRadius: 0.5
   layerMask:
@@ -2967,6 +2976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1595890394}
+  cast: {fileID: 1595890392}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -3250,6 +3260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1824410685}
+  cast: {fileID: 0}
   detectRadius: 30
   pickupRadius: 0.5
   layerMask:
@@ -3471,6 +3482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 1853081078}
+  cast: {fileID: 1853081076}
   detectRadius: 10
   pickupRadius: 0.5
   layerMask:
@@ -4066,6 +4078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 2078207510}
+  cast: {fileID: 0}
   detectRadius: 100
   pickupRadius: 0.5
   layerMask:
