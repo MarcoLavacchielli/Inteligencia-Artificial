@@ -38,12 +38,14 @@ public class HunterNPC : MonoBehaviour
     [SerializeField] private float RingSpawnFood;
 
     public List<Transform> agentsToChase = new List<Transform>();
+    [SerializeField] private Renderer render;
+    public Rigidbody rb;
 
     void Start()
     {
         stateDictionary.Add("Rest", new RestState());
-        stateDictionary.Add("Patrol", new PatrolState(agentsToChase));
-        stateDictionary.Add("Chase", new ChaseState(agentsToChase));
+        stateDictionary.Add("Patrol", new PatrolState(agentsToChase, rb));
+        stateDictionary.Add("Chase", new ChaseState(agentsToChase, rb));
 
         SetState("Rest");
     }
@@ -52,7 +54,7 @@ public class HunterNPC : MonoBehaviour
     {
         currentStateObject.UpdateState(this);
         ApplyObstacleAvoidance();
-        ChangeMaterial();
+        ChangeMaterial(); // 1
         CheckAndAdjustPosition();
     }
 
@@ -94,7 +96,7 @@ public class HunterNPC : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.forward, out hit, visionRadius, LayerMask.GetMask("Obstacle")))
         {
             Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
-            GetComponent<Rigidbody>().velocity = avoidanceDirection * speed;
+            rb.velocity = avoidanceDirection * speed;
         }
     }
 
@@ -108,7 +110,6 @@ public class HunterNPC : MonoBehaviour
 
     public void ChangeMaterial()
     {
-        Renderer render = GetComponent<Renderer>();
         if (currentStateObject is PatrolState)
         {
             render.material = patrolMat;

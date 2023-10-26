@@ -7,10 +7,12 @@ public class PatrolState : IState
 
     //
     private List<Transform> agentsToChase;
+    private Rigidbody rb;
 
-    public PatrolState(List<Transform> agentsToChase)
+    public PatrolState(List<Transform> agentsToChase, Rigidbody rb)
     {
         this.agentsToChase = agentsToChase;
+        this.rb = rb;
     }
     //
 
@@ -46,7 +48,7 @@ public class PatrolState : IState
         }
 
         Vector3 direction = (hunter.patrolWaypoints[hunter.currentWaypointIndex].position - hunter.transform.position).normalized;
-        hunter.GetComponent<Rigidbody>().velocity = direction * hunter.patrolSpeed;
+        hunter.rb.velocity = direction * hunter.patrolSpeed;
 
         float distanceToWaypoint = Vector3.Distance(hunter.transform.position, hunter.patrolWaypoints[hunter.currentWaypointIndex].position);
         if (distanceToWaypoint < 1.0f)

@@ -7,10 +7,12 @@ public class ChaseState : IState
 
     //
     private List<Transform> agentsToChase;
+    private Rigidbody rb;
 
-    public ChaseState(List<Transform> agentsToChase)
+    public ChaseState(List<Transform> agentsToChase, Rigidbody rb)
     {
         this.agentsToChase = agentsToChase;
+        this.rb = rb;
     }
     //
 
@@ -40,7 +42,7 @@ public class ChaseState : IState
             if (distanceToAgent < hunter.visionRadius)
             {
                 Vector3 chaseDirection = hunter.Pursuit(agent.transform.position);
-                hunter.GetComponent<Rigidbody>().velocity = chaseDirection * hunter.speed;
+                hunter.rb.velocity = chaseDirection * hunter.speed;
             }
         }
     }

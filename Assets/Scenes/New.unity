@@ -544,6 +544,8 @@ MonoBehaviour:
   - {fileID: 1441596718}
   - {fileID: 1439567384}
   - {fileID: 578538946}
+  render: {fileID: 405411741}
+  rb: {fileID: 405411748}
 --- !u!54 &405411748
 Rigidbody:
   m_ObjectHideFlags: 0
