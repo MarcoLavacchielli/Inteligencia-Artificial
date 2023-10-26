@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class PatrolState : IState
 {
+
+    //
+    private List<Transform> agentsToChase;
+
+    public PatrolState(List<Transform> agentsToChase)
+    {
+        this.agentsToChase = agentsToChase;
+    }
+    //
+
     public void EnterState(HunterNPC hunter)
     {
         hunter.energy -= 5.0f * Time.deltaTime;
@@ -24,8 +34,7 @@ public class PatrolState : IState
             hunter.SpawnFood();
         }
 
-        GameObject[] agents = GameObject.FindGameObjectsWithTag("Agent");
-        foreach (GameObject agent in agents)
+        foreach (Transform agent in agentsToChase)
         {
             float distanceToAgent = Vector3.Distance(hunter.transform.position, agent.transform.position);
 

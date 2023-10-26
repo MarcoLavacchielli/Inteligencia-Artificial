@@ -37,11 +37,13 @@ public class HunterNPC : MonoBehaviour
 
     [SerializeField] private float RingSpawnFood;
 
+    public List<Transform> agentsToChase = new List<Transform>();
+
     void Start()
     {
         stateDictionary.Add("Rest", new RestState());
-        stateDictionary.Add("Patrol", new PatrolState());
-        stateDictionary.Add("Chase", new ChaseState());
+        stateDictionary.Add("Patrol", new PatrolState(agentsToChase));
+        stateDictionary.Add("Chase", new ChaseState(agentsToChase));
 
         SetState("Rest");
     }
