@@ -404,10 +404,7 @@ GameObject:
   - component: {fileID: 405411743}
   - component: {fileID: 405411742}
   - component: {fileID: 405411741}
-  - component: {fileID: 405411740}
   - component: {fileID: 405411739}
-  - component: {fileID: 405411744}
-  - component: {fileID: 405411745}
   - component: {fileID: 405411746}
   m_Layer: 0
   m_Name: EsferaMala
@@ -423,26 +420,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 405411738}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 121ee393690a3f547987c4ffd293a60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxAcceleration: 0.2
-  maxSpeed: 4
---- !u!135 &405411740
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405411738}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  maxSpeed: 7
 --- !u!23 &405411741
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -508,7 +492,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &405411744
+--- !u!114 &405411746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -517,57 +501,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 405411738}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: affd035ad862ef14ab6ee5a46417a669, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodPrefab: {fileID: 8674065770445480846, guid: 0808e21b378093642a735516de6d2fdf, type: 3}
-  energy: 100
-  speed: 9
-  patrolSpeed: 7
-  visionRadius: 15
-  patrolWaypoints:
-  - {fileID: 1169728107}
-  - {fileID: 1584929332}
-  currentWaypointIndex: 0
-  restTimer: 0
-  restDuration: 5
-  currentState: 0
-  patrolMat: {fileID: 2100000, guid: 864e247b2fb1f214c8ebb1e548f65579, type: 2}
-  restMat: {fileID: 2100000, guid: 9ecf0c8c2d440004f82112915f7e1cde, type: 2}
-  chaseMat: {fileID: 2100000, guid: 40a0de8b1add03e4f98160da201028e0, type: 2}
-  originalSpeed: 0
-  originalPatrolSpeed: 0
-  RingSpawnFood: 60
---- !u!54 &405411745
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405411738}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &405411746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 405411738}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c9b3b17f219bc64f9552f811f0ca3c1, type: 3}
+  m_Script: {fileID: 11500000, guid: d5c3ad93438ba004eb10439bc4bb505b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 405411739}
-  target: {fileID: 1548151558}
+  target: {fileID: 768186403}
 --- !u!1 &494116249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,6 +1129,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8390605427744656207, guid: d5b998a8a63cc4540a4b5b8b9cff8a42, type: 3}
   m_PrefabInstance: {fileID: 8390605427404362606}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &768186403 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8390605427744656205, guid: d5b998a8a63cc4540a4b5b8b9cff8a42, type: 3}
+  m_PrefabInstance: {fileID: 8390605427404362606}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121ee393690a3f547987c4ffd293a60a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &921391044
 PrefabInstance:
   m_ObjectHideFlags: 0
