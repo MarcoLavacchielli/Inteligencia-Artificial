@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HunterNPC;
 
 public class ChaseState : IState
 {
@@ -19,7 +18,7 @@ public class ChaseState : IState
 
         if (hunter.energy <= 0)
         {
-            hunter.SetState(HunterNPC.HunterState.Rest);
+            hunter.SetState("Rest");
             hunter.energy = 100.0f;
             hunter.SpawnFood();
         }
@@ -36,5 +35,10 @@ public class ChaseState : IState
                 hunter.GetComponent<Rigidbody>().velocity = chaseDirection * hunter.speed;
             }
         }
+    }
+
+    public void ExecuteStateBehavior(HunterNPC hunter)
+    {
+        // Implement chase behavior if needed
     }
 }

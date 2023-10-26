@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HunterNPC;
 
 public class RestState : IState
 {
@@ -26,7 +25,12 @@ public class RestState : IState
         if (hunter.restTimer >= hunter.restDuration)
         {
             hunter.restTimer = 0.0f;
-            hunter.SetState(HunterNPC.HunterState.Patrol);
+            hunter.SetState("Patrol");
         }
+    }
+
+    public void ExecuteStateBehavior(HunterNPC hunter)
+    {
+        // Implement rest behavior if needed
     }
 }

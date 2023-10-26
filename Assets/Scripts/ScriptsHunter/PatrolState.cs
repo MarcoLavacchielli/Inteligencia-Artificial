@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HunterNPC;
 
 public class PatrolState : IState
 {
@@ -20,7 +19,7 @@ public class PatrolState : IState
 
         if (hunter.energy <= 0)
         {
-            hunter.SetState(HunterNPC.HunterState.Rest);
+            hunter.SetState("Rest");
             hunter.energy = 100.0f;
             hunter.SpawnFood();
         }
@@ -32,7 +31,7 @@ public class PatrolState : IState
 
             if (distanceToAgent < hunter.visionRadius)
             {
-                hunter.SetState(HunterNPC.HunterState.Chase);
+                hunter.SetState("Chase");
                 return;
             }
         }
@@ -45,5 +44,10 @@ public class PatrolState : IState
         {
             hunter.currentWaypointIndex = (hunter.currentWaypointIndex + 1) % hunter.patrolWaypoints.Length;
         }
+    }
+
+    public void ExecuteStateBehavior(HunterNPC hunter)
+    {
+        // Implement patrol behavior if needed
     }
 }
