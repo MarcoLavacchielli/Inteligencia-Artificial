@@ -97,7 +97,7 @@ public class HunterNPC : MonoBehaviour
     public void ApplyObstacleAvoidance()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, visionRadius, LayerMask.GetMask("Obstacle")))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, visionRadius, LayerMask.GetMask("Wall")))
         {
             Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
             rb.velocity = avoidanceDirection * speed;

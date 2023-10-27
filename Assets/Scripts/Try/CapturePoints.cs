@@ -51,8 +51,6 @@ public class CapturePoints : MonoBehaviour
         if (currentDistance < pickupRadius)
             Destroy(points[closest].gameObject);
 
-        print("GOTO");
-
         agent.Accelerate(agent.Seek(currentTransform.position) * weight);
     }
 
