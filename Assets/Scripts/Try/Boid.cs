@@ -11,10 +11,10 @@ public class Boid : MonoBehaviour
 
     [SerializeField]
     float
-        separationWeight = 1f,
-        cohesionWeight = 1f,
-        alignmentWeight = 1f,
-        globalWeight = .1f;
+        separationBetweenAgent = 1f,
+        cohesionBetweenAgent = 1f,
+        alignment = 1f,
+        global = .1f;
 
     [SerializeField]
     float radius = 8f;
@@ -56,9 +56,9 @@ public class Boid : MonoBehaviour
 
         Vector3 cohesion = agent.Seek(averagePosition);
 
-        agent.Accelerate(globalWeight * separationWeight * separation);
-        agent.Accelerate(cohesionWeight * globalWeight * cohesion);
-        agent.Accelerate(alignmentWeight * globalWeight * alignment);
+        agent.Accelerate(global * separationBetweenAgent * separation);
+        agent.Accelerate(cohesionBetweenAgent * global * cohesion);
+        agent.Accelerate(this.alignment * global * alignment);
     }
 
     private void OnDrawGizmosSelected()
