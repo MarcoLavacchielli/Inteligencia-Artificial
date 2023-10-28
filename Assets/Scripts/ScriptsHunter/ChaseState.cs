@@ -77,7 +77,9 @@ public class ChaseState : IState
         RaycastHit hit;
         Vector3 direction = desiredDirection.normalized;
 
-        if (Physics.Raycast(hunter.transform.position, direction, out hit, 3.0f) && hit.collider.CompareTag("Wall"))
+        int wallLayer = LayerMask.NameToLayer("Wall");
+
+        if (Physics.Raycast(hunter.transform.position, direction, out hit, 3.0f, 1 << wallLayer))
         {
             Vector3 reflectedDirection = Vector3.Reflect(direction, hit.normal);
 

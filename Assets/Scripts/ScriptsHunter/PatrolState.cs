@@ -33,7 +33,7 @@ public class PatrolState : IState
             hunter.SpawnFood();
         }
 
-        foreach (Transform agent in agentsToChase)
+        foreach (Transform agent in hunter.agentsToChase)
         {
             float distanceToAgent = Vector3.Distance(hunter.transform.position, agent.transform.position);
 
@@ -59,7 +59,9 @@ public class PatrolState : IState
         RaycastHit hit;
         Vector3 direction = (hunter.patrolWaypoints[hunter.currentWaypointIndex].position - hunter.transform.position).normalized;
 
-        if (Physics.Raycast(hunter.transform.position, direction, out hit, 3.0f) && hit.collider.CompareTag("Wall"))
+        int wallLayer = LayerMask.NameToLayer("Wall"); 
+
+        if (Physics.Raycast(hunter.transform.position, direction, out hit, 3.0f, 1 << wallLayer))
         {
             Vector3 reflectedDirection = Vector3.Reflect(direction, hit.normal);
 
