@@ -31,7 +31,7 @@ public class EvadeTarget : MonoBehaviour
 
     private bool IsWithinRadius(Vector3 position1, Vector3 position2, float radius)
     {
-        // Comprueba si la distancia entre position1 2 es menor o igual al radio
+        // Comprueba si la distancia entre el position 1 y 2 es menor o igual al radio
         return Vector3.Distance(position1, position2) <= radius;
     }
 
