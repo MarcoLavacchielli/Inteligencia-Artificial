@@ -31,5 +31,6 @@ public class RestState : IState
 
     public void ExecuteStateBehavior(HunterNPC hunter)
     {
+        // Implement rest behavior if needed
     }
 }

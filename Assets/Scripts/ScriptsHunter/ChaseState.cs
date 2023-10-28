@@ -65,7 +65,7 @@ public class ChaseState : IState
             }
         }
 
-        // Si no se encontró ningún agente sale del perseguir
+        // Si no se encontró ningún agente, salir del estado de persecución
         if (!foundAgent)
         {
             hunter.SetState("Patrol");
