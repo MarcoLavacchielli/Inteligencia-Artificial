@@ -9,7 +9,7 @@ public class EvadeTarget : MonoBehaviour
     Agent evade;
 
     [SerializeField]
-    bool detected;
+    bool seek;
 
     [SerializeField]
     float evadeRadius = 5f;
@@ -20,7 +20,7 @@ public class EvadeTarget : MonoBehaviour
         {
             var force = agent.Evade(evade);
 
-            if (detected)
+            if (seek)
             {
                 force += agent.Seek(evade.transform.position);
             }
