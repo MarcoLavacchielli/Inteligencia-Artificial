@@ -54,7 +54,6 @@ public class HunterNPC : MonoBehaviour
     {
         ChangeMaterial(); // ya no tiene mas getcomponent
         CheckAndAdjustPosition();
-        ApplyObstacleAvoidance();
     }
 
     public void FixedUpdate() // esto maneja cositas de velocidad, creo
@@ -94,23 +93,6 @@ public class HunterNPC : MonoBehaviour
         Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
     }
 
-    public void ApplyObstacleAvoidance()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, visionRadius, LayerMask.GetMask("Wall")))
-        {
-            Vector3 avoidanceDirection = ObstacleAvoidance(hit.point);
-            rb.velocity = avoidanceDirection * speed;
-        }
-    }
-
-    public Vector3 ObstacleAvoidance(Vector3 obstaclePosition)
-    {
-        Vector3 toObstacle = obstaclePosition - transform.position;
-        Vector3 avoidanceDirection = Vector3.Cross(Vector3.up, toObstacle.normalized).normalized;
-
-        return avoidanceDirection;
-    }
 
     public void ChangeMaterial()
     {

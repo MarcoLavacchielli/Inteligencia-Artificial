@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PatrolState : IState
 {
-
-    //
     private List<Transform> agentsToChase;
     private Rigidbody rb;
 
@@ -14,7 +12,6 @@ public class PatrolState : IState
         this.agentsToChase = agentsToChase;
         this.rb = rb;
     }
-    //
 
     public void EnterState(HunterNPC hunter)
     {
@@ -47,8 +44,8 @@ public class PatrolState : IState
             }
         }
 
-        Vector3 direction = (hunter.patrolWaypoints[hunter.currentWaypointIndex].position - hunter.transform.position).normalized;
-        hunter.rb.velocity = direction * hunter.patrolSpeed;
+        Vector3 avoidanceDirection = CalculateAvoidanceDirection(hunter);
+        hunter.rb.velocity = avoidanceDirection * hunter.patrolSpeed;
 
         float distanceToWaypoint = Vector3.Distance(hunter.transform.position, hunter.patrolWaypoints[hunter.currentWaypointIndex].position);
         if (distanceToWaypoint < 1.0f)
@@ -57,8 +54,23 @@ public class PatrolState : IState
         }
     }
 
+    private Vector3 CalculateAvoidanceDirection(HunterNPC hunter)
+    {
+        RaycastHit hit;
+        Vector3 direction = (hunter.patrolWaypoints[hunter.currentWaypointIndex].position - hunter.transform.position).normalized;
+
+        if (Physics.Raycast(hunter.transform.position, direction, out hit, 3.0f) && hit.collider.CompareTag("Wall"))
+        {
+            Vector3 reflectedDirection = Vector3.Reflect(direction, hit.normal);
+
+            float smoothingFactor = 0.5f; // Ajustar el smooth para que no vaya muy pateado al girar
+            return Vector3.Lerp(direction, reflectedDirection, smoothingFactor);
+        }
+
+        return direction;
+    }
+
     public void ExecuteStateBehavior(HunterNPC hunter)
     {
-        // Implement patrol behavior if needed
     }
 }
