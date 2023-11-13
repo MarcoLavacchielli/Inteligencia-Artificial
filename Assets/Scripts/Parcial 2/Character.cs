@@ -5,14 +5,9 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
 
-    private Rigidbody myRig;
+    [SerializeField] private Rigidbody myRig;
     private float yVelocity;
     public float speed = 200f;
-
-    private void Awake()
-    {
-        myRig = GetComponent<Rigidbody>(); //CAMBIAR
-    }
 
     private void FixedUpdate()
     {
