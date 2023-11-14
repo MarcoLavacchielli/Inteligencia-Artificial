@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Rendering;
 
 public class Node : MonoBehaviour
 {
@@ -9,6 +9,8 @@ public class Node : MonoBehaviour
 
     [SerializeField]
     Color color;
+
+    public bool Blocked;
 
     private void OnValidate()
     {
@@ -19,6 +21,17 @@ public class Node : MonoBehaviour
             block.SetColor("_Color", color);
             rend.SetPropertyBlock(block);
         }
+    }
+
+    private void Start()
+    {
+        OnValidate();
+    }
+
+    public void SetColor(Color color)
+    {
+        this.color = color;
+        OnValidate();
     }
 
     private void OnDrawGizmos()
@@ -99,9 +112,158 @@ public class Node : MonoBehaviour
 
         return new List<Node>();
     }
+
+    public float CostTo(Node other)
+    {
+        return Vector3.Distance(transform.position, other.transform.position);
+    }
+
+    public List<Node> Dijkstra(Node target)
+    {
+        var pending = new PriorityQueueMin<Node>();
+        pending.Enqueue(this, 1f);
+
+        var path = new Dictionary<Node, Node>(); // Camino
+        var costs = new Dictionary<Node, float>();
+        costs.Add(this, 0f);
+
+        while (pending.Count > 0)
+        {
+            var node = pending.Dequeue();
+            if (node == target)
+                return Build(path, target);
+
+            foreach (var next in node.neighbours)
+            {
+                if (next.Blocked) continue;
+
+                if (next == this)
+                    continue;
+
+                float cost = costs[node] + CostTo(next);
+
+                if (!costs.ContainsKey(next))
+                {
+                    costs.Add(next, cost);
+                    pending.Enqueue(next, cost);
+                    path.Add(next, node);
+                }
+                else if (cost < costs[node])
+                {
+                    pending.Enqueue(next, cost);
+                    costs[node] = cost;
+                    path[next] = node;
+                }
+            }
+        }
+
+        return new List<Node>();
+    }
+
+    public float Heuristic(Node target)
+    {
+        return Vector3.Distance(transform.position, target.transform.position);
+    }
+
+    public List<Node> GreedyBFS(Node target)
+    {
+        var pending = new PriorityQueueMin<Node>(); // Por Visitar
+        var path = new Dictionary<Node, Node>(); // Camino
+        pending.Enqueue(this, 0f);
+
+        while (pending.Count > 0)
+        {
+            var node = pending.Dequeue();
+            if (node == target)
+                return Build(path, node);
+
+            foreach (var next in node.neighbours)
+            {
+                if (next.Blocked) continue;
+
+                // Ya visite este vecino ???
+                if (path.ContainsKey(next) || next == this)
+                    continue;
+
+                path[next] = node;
+                pending.Enqueue(next, next.Heuristic(target));
+            }
+        }
+
+        return new List<Node>();
+    }
+}
+
+
+class PriorityQueueMin<T>
+{
+    List<(T item, float priority)> elements = new();
+
+    public int Count => elements.Count;
+
+    public void Enqueue(T item, float priority)
+    {
+        if (elements.Count == 0 || priority < elements[^1].priority)
+        {
+            elements.Add((item, priority));
+            return;
+        }
+        int index = elements.Count - 1;
+
+        while (index > 0)
+        {
+            if (priority < elements[index - 1].priority)
+            {
+                break;
+            }
+            index--;
+        }
+        elements.Insert(index, (item, priority));
+    }
+
+    public T Dequeue()
+    {
+        var elem = elements[^1].item;
+        elements.RemoveAt(elements.Count - 1);
+        return elem;
+    }
+}
+
+class PriorityQueueMax<T>
+{
+    List<(T item, float priority)> elements = new();
+
+    public int Count => elements.Count;
+
+    public void Enqueue(T item, float priority)
+    {
+        if (elements.Count == 0 || priority > elements[^1].priority)
+        {
+            elements.Add((item, priority));
+            return;
+        }
+        int index = elements.Count - 1;
+
+        while (index > 0)
+        {
+            if (priority > elements[index - 1].priority)
+            {
+                break;
+            }
+            index--;
+        }
+        elements.Insert(index, (item, priority));
+    }
+
+    public T Dequeue()
+    {
+        var elem = elements[^1].item;
+        elements.RemoveAt(elements.Count - 1);
+        return elem;
+    }
 }
 
 public enum PathAlgorithm
 {
-    BFS, DFS,
+    BFS, DFS, Dijkstra,
 }
