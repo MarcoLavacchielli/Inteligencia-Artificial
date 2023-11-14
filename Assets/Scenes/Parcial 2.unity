@@ -593,6 +593,7 @@ GameObject:
   - component: {fileID: 1598751675}
   - component: {fileID: 1598751674}
   - component: {fileID: 1598751673}
+  - component: {fileID: 1598751679}
   - component: {fileID: 1598751678}
   m_Layer: 0
   m_Name: Player
@@ -705,11 +706,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1598751672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 435aee3cd02e3f84b89ee06079f11add, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b1aece440d2942418e284f5d9e83dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myRig: {fileID: 1598751673}
-  speed: 200
+  character: {fileID: 1598751679}
+  cam: {fileID: 747840534}
+  moveSpeed: 5
+--- !u!114 &1598751679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1598751672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ae82b3d05f3c042a1ffdba2f614f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &1777681040
 GameObject:
   m_ObjectHideFlags: 0
