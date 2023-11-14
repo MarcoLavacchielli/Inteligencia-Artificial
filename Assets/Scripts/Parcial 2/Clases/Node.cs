@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -9,6 +10,9 @@ public class Node : MonoBehaviour
 
     [SerializeField]
     Color color;
+
+    [SerializeField]
+    LayerMask wallMask;
 
     public bool Blocked;
 
@@ -191,6 +195,75 @@ public class Node : MonoBehaviour
         }
 
         return new List<Node>();
+    }
+
+    public List<Node> AStar(Node target)
+    {
+        var pending = new PriorityQueueMin<Node>();
+        pending.Enqueue(this, 1f);
+
+        var path = new Dictionary<Node, Node>(); // Camino
+        var costs = new Dictionary<Node, float>();
+        costs.Add(this, 0f);
+
+        while (pending.Count > 0)
+        {
+            var node = pending.Dequeue();
+
+            if (node == target)
+                return Build(path, node);
+
+            foreach (var next in node.neighbours)
+            {
+                if (next == this)
+                    continue;
+
+                float cost = costs[node] + CostTo(next);
+
+                if (!costs.ContainsKey(next))
+                {
+                    costs.Add(next, cost);
+                    pending.Enqueue(next, cost + next.Heuristic(target));
+                    path.Add(next, node);
+                }
+                else if (cost < costs[node])
+                {
+                    pending.Enqueue(next, cost + next.Heuristic(target));
+                    costs[node] = cost;
+                    path[next] = node;
+                }
+            }
+        }
+
+        return new List<Node>();
+    }
+
+    public bool Skip(Node from, Node to)
+    {
+        var dir = (to.transform.position - from.transform.position);
+        return !Physics.Raycast(
+            from.transform.position, dir,
+            dir.magnitude, wallMask
+            );
+    }
+
+    public List<Node> ThetaStar(Node target)
+    {
+        var path = AStar(target);
+
+        if (path.Count == 0) { return path; }
+
+        int current = 0;
+
+        while (current + 2 < path.Count)
+        {
+            if (Skip(path[current], path[current + 2]))
+                path.RemoveAt(current + 1);
+            else
+                current++;
+        }
+
+        return path;
     }
 }
 
