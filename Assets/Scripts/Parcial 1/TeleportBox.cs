@@ -31,6 +31,7 @@ public class TeleportBox : MonoBehaviour
 
     public static Vector3 UpdatePosition(Vector3 position)
     {
+        if (!instance) return position;
         var max = instance.bounds.max;
         var min = instance.bounds.min;
         var size = instance.bounds.size;

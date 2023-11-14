@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetectAndChase : MonoBehaviour
+public class DetecteAndChase : MonoBehaviour
 {
     [SerializeField]
     Agent agent;
@@ -18,5 +18,4 @@ public class DetectAndChase : MonoBehaviour
         if (detection.InLineOfSight(chase.position))
             agent.Accelerate((chase.position - transform.position).normalized * 2f);
     }
-
 }
