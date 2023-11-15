@@ -984,7 +984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unwalkable:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   width: 20
   height: 20
   spacing: 2
