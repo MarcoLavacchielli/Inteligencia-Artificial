@@ -1,22 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 public class NavActor : MonoBehaviour
 {
+    [SerializeField]
+    Camera cam;
 
     [SerializeField]
     PhysicalNodeGrid grid;
 
     [SerializeField]
-    float moveTime = 2f;
+    float moveTime = 1f;
 
     [SerializeField]
     Vector3 offset = new(0, 1.5f, 0);
 
-    static WaitForSeconds time = new WaitForSeconds(.01f);
+    float[] times = new float[]
+    {
+        1f,
+        .5f,
+        .25f,
+        .1f,
+        .05f,
+        .025f,
+        .01f,
+        .005f,
+    };
+    int currentTime = 0;
 
+    Node start, goal;
+    List<Node> path = new();
+
+    bool moving;
 
 
     Node GetCurrent()
@@ -27,58 +46,140 @@ public class NavActor : MonoBehaviour
         return hit.collider.GetComponent<Node>();
     }
 
+    private WaitUntil GetTime()
+    {
+        float t = 0;
+        return new WaitUntil(() =>
+        {
+            t += Time.deltaTime / times[currentTime];
+            return t >= 1;
+        });
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+            currentTime++;
+        if (Input.GetKeyDown(KeyCode.S))
+            currentTime--;
+        currentTime = Mathf.Clamp(currentTime, 0, times.Length - 1);
+    }
+
+    public void GoTo(Vector3 position)
+    {
+        if (moving) return;
+
+        start = grid.GetClosest(transform.position);
+        goal = grid.GetClosest(position);
+        if (!start || !goal || start == goal) return;
+
+        path = start.ThetaStar(goal);
+        path.Reverse();
+    }
+
     IEnumerator Start()
     {
-        yield return new WaitForSeconds(1.5f);
 
-        var start = GetCurrent();
-        var goal = grid.GetRandom();
-
-        if (!start)
-            print("No Current");
-        if (!goal)
-            print("No Goal");
-
-        yield return new WaitForSeconds(2.5f);
-        SetGridColors(start, goal);
-
-        yield return time;
-
-        yield return BFSRoutine(start, goal);
-
-        yield return new WaitForSeconds(2.5f);
-        SetGridColors(start, goal);
-
-        yield return DijkstraRoutine(start, goal);
-
-        yield return new WaitForSeconds(2.5f);
-        SetGridColors(start, goal);
-
-        yield return GreedyBFSRoutine(start, goal);
-
-        var path = start.GreedyBFS(goal);
-        if (path.Count == 0)
+        /*while (true)
         {
-            Debug.LogError("No se encontro Camino!");
-            yield break;
+            yield return null;
+
+            if (Input.GetMouseButton(0))
+            {
+                var ray = cam.ScreenPointToRay(Input.mousePosition);
+                var plane = new Plane(Vector3.up, .5f);
+                if (plane.Raycast(ray, out float e))
+                {
+                    goal = grid.GetClosest(ray.GetPoint(e));
+                }
+                start = grid.GetClosest(transform.position);
+                SetGridColors();
+            }
+
+            if (!start || !goal) continue;
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                yield return GreedyBFSRoutine(start, goal);
+
+                if (path.Count == 0)
+                {
+                    Debug.Log("No camino");
+                    continue;
+                }
+
+                break;
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                yield return DijkstraRoutine(start, goal);
+
+                if (path.Count == 0)
+                {
+                    Debug.Log("No hay camino");
+                    continue;
+                }
+
+                break;
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                path = start.ThetaStar(goal);
+                path.Reverse();
+
+                foreach (var node in path)
+                {
+                    node.SetColor(Color.green);
+                }
+
+                if (path.Count == 0)
+                {
+                    Debug.LogError("No se encontro camino!");
+                    continue;
+                }
+
+                break;
+            }
+        }*/
+        moving = false;
+        yield return new WaitUntil(() => path != null && path.Count > 0);
+        moving = true;
+
+        yield return new WaitForSeconds(.1f);
+        for(int i = path.Count -1; i > 0; i--)
+        {
+            yield return MoveTo(path[i - 1]);
         }
 
-        for (int i = 0; i < path.Count - 1; i++)
-        {
-            yield return Move(path[i], path[i + 1]);
-        }
-
+        path = null;
         StartCoroutine(Start());
+    }
+
+    private void SetAllColors(Color color)
+    {
+        foreach(var item in grid.AllNodes)
+        {
+            item.SetColor(color);
+        }
     }
 
     private void SetGridColors(Node start, Node goal)
     {
-        foreach (var item in grid.AllNodes)
+        SetAllColors(Color.white);
+        if (start) start.SetColor(Color.yellow);
+        if (goal) goal.SetColor(Color.green);
+    }
+
+    IEnumerator MoveTo(Node node)
+    {
+        var start = transform.position;
+        var goal = node.transform.position;
+        for (float f = 0; f < 1; f += Time.deltaTime / (goal-start).magnitude / moveTime)
         {
-            item.SetColor(Color.white);
+            yield return null;
+            transform.position = Vector3.Lerp(
+              start, goal, f)
+                + offset;
         }
-        start.SetColor(Color.yellow);
-        goal.SetColor(Color.green);
     }
 
     IEnumerator Move(Node from, Node to)
