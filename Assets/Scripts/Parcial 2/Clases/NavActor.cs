@@ -193,6 +193,7 @@ public class NavActor : MonoBehaviour
         }
     }
 
+    /*
     public IEnumerator GreedyBFSRoutine(Node start, Node goal)
     {
         var frontier = new PriorityQueueMin<Node>();
@@ -341,4 +342,5 @@ public class NavActor : MonoBehaviour
             }
         }
     }
+    */
 }
