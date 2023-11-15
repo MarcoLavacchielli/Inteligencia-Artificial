@@ -12,11 +12,16 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        var lvel = transform.InverseTransformDirection(velocity);
         // animator.SetFloat("_MoveSpeed", velocity.magnitude);
         //animator.SetFloat("_DirX", velocity.normalized.x);
         //animator.SetFloat("_DirY", velocity.normalized.z);
 
         transform.position += velocity * Time.deltaTime;
+        if(velocity.sqrMagnitude > 0)
+        {
+            transform.forward = velocity.normalized;
+        }
     }
 
     public void Talk()
