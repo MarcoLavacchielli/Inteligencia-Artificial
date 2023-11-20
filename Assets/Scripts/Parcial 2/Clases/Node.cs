@@ -8,6 +8,8 @@ public class Node : MonoBehaviour
 
     public List<Node> neighbours = new();
 
+    public Vector3 WorldPosition => transform.position;
+
     [SerializeField]
     Color color;
 

@@ -92,8 +92,34 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
 
-        //character.velocity = Vector3.zero;  // si no hay waypoints
-        // Waypoints
+        List<Node> nodesList = grid.GetNodesList();
+        // Detenerse si no hay nodos o si ya se está moviendo
+        if (nodesList == null || nodesList.Count == 0 || moving)
+        {
+            character.velocity = Vector3.zero;
+            return;
+        }
+
+        // Obtener el próximo nodo en la lista de nodos
+        Node target = nodesList[nodesList.Count - 1];
+        Vector3 dir = (target.WorldPosition - transform.position);
+
+        // Moverse hacia el próximo nodo
+        character.velocity = dir.normalized * moveSpeed;
+
+        // Comprobar si se alcanzó el nodo objetivo
+        if (Vector3.Distance(target.WorldPosition, transform.position) < 0.2f)
+        {
+            // Eliminar el nodo alcanzado de la lista de nodos
+            nodesList.RemoveAt(nodesList.Count - 1);
+
+            // Si no hay más nodos, detenerse
+            if (nodesList.Count == 0)
+            {
+                character.velocity = Vector3.zero;
+                moving = false;
+            }
+        }
     }
 
     private void Seek()

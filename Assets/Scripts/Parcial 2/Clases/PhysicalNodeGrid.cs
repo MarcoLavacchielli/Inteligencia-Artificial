@@ -36,6 +36,11 @@ public class PhysicalNodeGrid : MonoBehaviour
         return null;
     }
 
+    public List<Node> GetNodesList()
+    {
+        return nodesList;
+    }
+
     private void Awake()
     {
         Generate();
