@@ -24,11 +24,14 @@ public class DesicionAI : MonoBehaviour
     [SerializeField]
     Renderer render;
 
+    [SerializeField]
     List<Node> path = new();
 
     bool moving;
 
     MaterialPropertyBlock block;
+
+    int currentNodeIndex = 0;
 
     IDesicion tree;
 
@@ -92,8 +95,28 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
 
-        //character.velocity = Vector3.zero;  // si no hay waypoints
-        // Waypoints
+        // Verifica si hay nodos en la ruta de patrulla
+        if (path != null && path.Count > 0)
+        {
+            // Establece el destino como el nodo actual en la ruta de patrulla
+            Node targetNode = path[currentNodeIndex];
+
+            // Calcula la dirección hacia el nodo
+            Vector3 dir = (targetNode.transform.position - transform.position);
+
+            // Actualiza la velocidad del personaje hacia el nodo
+            character.velocity = dir.normalized * moveSpeed;
+
+            // Si el personaje llega lo suficientemente cerca al nodo actual, pasa al siguiente nodo
+            if (Vector3.Distance(targetNode.transform.position, transform.position) < 1f)
+            {
+                currentNodeIndex = (currentNodeIndex + 1) % path.Count;
+            }
+        }
+        else
+        {
+            character.velocity = Vector3.zero;  // si no hay waypoints
+        }
     }
 
     private void Seek()
