@@ -92,6 +92,7 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
 
+        //character.velocity = Vector3.zero;  // si no hay waypoints
         // Waypoints
     }
 
