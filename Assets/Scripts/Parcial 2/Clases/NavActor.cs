@@ -164,7 +164,7 @@ public class NavActor : MonoBehaviour
 
     private void SetGridColors(Node start, Node goal)
     {
-        SetAllColors(Color.white);
+        //SetAllColors(Color.white);
         if (start) start.SetColor(Color.yellow);
         if (goal) goal.SetColor(Color.green);
     }
