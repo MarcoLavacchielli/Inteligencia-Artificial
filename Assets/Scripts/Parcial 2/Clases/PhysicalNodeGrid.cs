@@ -128,7 +128,15 @@ public class PhysicalNodeGrid : MonoBehaviour
     private void AddNeighbour(Node node, int x, int y)
     {
         if (TryGetNode(x, y, out var n) && n != null)
-            node.neighbours.Add(n);
+        {
+            // Verificar si la conexión atraviesa un objeto unwalkable
+            var direction = n.transform.position - node.transform.position;
+            var distance = direction.magnitude;
+            var hit = Physics.Raycast(node.transform.position, direction.normalized, distance, unwalkable);
+
+            if (!hit)
+                node.neighbours.Add(n);
+        }
     }
 
     bool TryGetNode(int x, int y, out Node node)
