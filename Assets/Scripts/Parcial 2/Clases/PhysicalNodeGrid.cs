@@ -109,16 +109,19 @@ public class PhysicalNodeGrid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (Application.isPlaying) return;
+        if (Application.isPlaying || nodesList == null) return;
 
         Gizmos.color = Color.white;
         foreach (var node in nodesList)
         {
-            var pos = node.transform.position;
-            bool wall = Physics.BoxCast(pos + Vector3.up * 10, Vector3.one / 2, Vector3.down, Quaternion.identity, 20f, unwalkable);
+            if (node != null)  // Add null check for each node
+            {
+                var pos = node.transform.position;
+                bool wall = Physics.BoxCast(pos + Vector3.up * 10, Vector3.one / 2, Vector3.down, Quaternion.identity, 20f, unwalkable);
 
-            if (!wall)
-                Gizmos.DrawCube(pos, Vector3.one);
+                if (!wall)
+                    Gizmos.DrawCube(pos, Vector3.one);
+            }
         }
     }
 

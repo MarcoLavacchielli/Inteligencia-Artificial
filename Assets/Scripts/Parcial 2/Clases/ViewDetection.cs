@@ -15,7 +15,7 @@ public class ViewDetection : MonoBehaviour
     float viewAngle = 90f;
 
     [SerializeField]
-    LayerMask wallMask;
+    public LayerMask wallMask;
 
     private void Update()
     {
