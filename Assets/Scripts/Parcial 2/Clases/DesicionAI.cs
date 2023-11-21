@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +24,10 @@ public class DesicionAI : MonoBehaviour
     [SerializeField]
     Renderer render;
 
+    [SerializeField]
     List<Node> path = new();
+
+    int currentNodeIndex = 0;
 
     bool moving;
 
@@ -91,34 +94,24 @@ public class DesicionAI : MonoBehaviour
     {
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
-
-        List<Node> nodesList = grid.GetNodesList();
-        // Detenerse si no hay nodos o si ya se está moviendo
-        if (nodesList == null || nodesList.Count == 0 || moving)
+        // Verifica si hay nodos en la ruta de patrulla
+        if (path != null && path.Count > 0)
         {
-            character.velocity = Vector3.zero;
-            return;
-        }
-
-        // Obtener el próximo nodo en la lista de nodos
-        Node target = nodesList[nodesList.Count - 1];
-        Vector3 dir = (target.WorldPosition - transform.position);
-
-        // Moverse hacia el próximo nodo
-        character.velocity = dir.normalized * moveSpeed;
-
-        // Comprobar si se alcanzó el nodo objetivo
-        if (Vector3.Distance(target.WorldPosition, transform.position) < 0.2f)
-        {
-            // Eliminar el nodo alcanzado de la lista de nodos
-            nodesList.RemoveAt(nodesList.Count - 1);
-
-            // Si no hay más nodos, detenerse
-            if (nodesList.Count == 0)
+            // Establece el destino como el nodo actual en la ruta de patrulla
+            Node targetNode = path[currentNodeIndex];
+            // Calcula la direcciï¿½n hacia el nodo
+            Vector3 dir = (targetNode.transform.position - transform.position);
+            // Actualiza la velocidad del personaje hacia el nodo
+            character.velocity = dir.normalized * moveSpeed;
+            // Si el personaje llega lo suficientemente cerca al nodo actual, pasa al siguiente nodo
+            if (Vector3.Distance(targetNode.transform.position, transform.position) < 1f)
             {
-                character.velocity = Vector3.zero;
-                moving = false;
+                currentNodeIndex = (currentNodeIndex + 1) % path.Count;
             }
+        }
+        else
+        {
+            character.velocity = Vector3.zero;  // si no hay waypoints
         }
     }
 
