@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PhysicalNodeGrid : MonoBehaviour
 {
-
     [SerializeField]
     LayerMask unwalkable;
 
@@ -18,9 +17,9 @@ public class PhysicalNodeGrid : MonoBehaviour
     [SerializeField]
     Node prefab;
 
-    Node[,] nodes;
-
     List<Node> nodesList;
+
+    public static PhysicalNodeGrid Instance { get; private set; }
 
     public IEnumerable<Node> AllNodes => nodesList;
 
@@ -43,18 +42,32 @@ public class PhysicalNodeGrid : MonoBehaviour
 
     private void Awake()
     {
-        Generate();
+        if (Instance == null)
+        {
+            Instance = this;
+            Generate();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Generate()
     {
-        if (nodes != null)
-            foreach (var item in nodes)
+        if (nodesList != null)
+        {
+            foreach (var item in nodesList)
+            {
                 if (item)
-                    Destroy(item);
+                {
+                    Destroy(item.gameObject);
+                }
+            }
+        }
 
-        nodes = new Node[width, height];
-        nodesList = new(width * height);
+        nodesList = new List<Node>(width * height);
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -70,29 +83,27 @@ public class PhysicalNodeGrid : MonoBehaviour
 
                 var node = Instantiate(prefab, transform);
                 node.transform.position = pos;
-                nodes[x, y] = node;
                 nodesList.Add(node);
                 //node.color = Random.ColorHSV(0f, 1f, .25f, .95f, .1f, .95f);
             }
         }
 
         // Setup neighbours
-        for (int x = 0; x < width; x++)
+        foreach (var node in nodesList)
         {
-            for (int y = 0; y < height; y++)
-            {
-                if (nodes[x, y] == null) continue;
+            var pos = node.transform.position;
+            int x = Mathf.RoundToInt((pos.x - transform.position.x) / spacing);
+            int y = Mathf.RoundToInt((pos.z - transform.position.z) / spacing);
 
-                AddNeighbour(nodes[x, y], x + 1, y);
-                AddNeighbour(nodes[x, y], x - 1, y);
-                AddNeighbour(nodes[x, y], x, y + 1);
-                AddNeighbour(nodes[x, y], x, y - 1);
+            AddNeighbour(node, x + 1, y);
+            AddNeighbour(node, x - 1, y);
+            AddNeighbour(node, x, y + 1);
+            AddNeighbour(node, x, y - 1);
 
-                AddNeighbour(nodes[x, y], x + 1, y + 1);
-                AddNeighbour(nodes[x, y], x - 1, y - 1);
-                AddNeighbour(nodes[x, y], x - 1, y + 1);
-                AddNeighbour(nodes[x, y], x + 1, y - 1);
-            }
+            AddNeighbour(node, x + 1, y + 1);
+            AddNeighbour(node, x - 1, y - 1);
+            AddNeighbour(node, x - 1, y + 1);
+            AddNeighbour(node, x + 1, y - 1);
         }
     }
 
@@ -101,22 +112,13 @@ public class PhysicalNodeGrid : MonoBehaviour
         if (Application.isPlaying) return;
 
         Gizmos.color = Color.white;
-        for (int x = 0; x < width; x++)
+        foreach (var node in nodesList)
         {
-            for (int y = 0; y < height; y++)
-            {
-                var pos = transform.position;
-                pos.x += x * spacing;
-                pos.z += y * spacing;
+            var pos = node.transform.position;
+            bool wall = Physics.BoxCast(pos + Vector3.up * 10, Vector3.one / 2, Vector3.down, Quaternion.identity, 20f, unwalkable);
 
-                bool wall = Physics.BoxCast(pos + Vector3.up * 10, Vector3.one / 2, Vector3.down, Quaternion.identity, 20f, unwalkable);
-                //bool wall = Physics.Raycast(pos + Vector3.up * 10, Vector3.down, 20f, unwalkable);
-                //Gizmos.DrawRay(pos + Vector3.up * 10, Vector3.down * 20f);
-
-                //var color = wall ? Color.red : Color.green;
-                if (!wall)
-                    Gizmos.DrawCube(pos, Vector3.one);
-            }
+            if (!wall)
+                Gizmos.DrawCube(pos, Vector3.one);
         }
     }
 
@@ -128,13 +130,20 @@ public class PhysicalNodeGrid : MonoBehaviour
 
     bool TryGetNode(int x, int y, out Node node)
     {
-        if (x < 0 || y < 0 || x >= nodes.GetLength(0) || y >= nodes.GetLength(1))
+        foreach (var n in nodesList)
         {
-            node = null;
-            return false;
+            var pos = n.transform.position;
+            int posX = Mathf.RoundToInt((pos.x - transform.position.x) / spacing);
+            int posY = Mathf.RoundToInt((pos.z - transform.position.z) / spacing);
+
+            if (posX == x && posY == y)
+            {
+                node = n;
+                return true;
+            }
         }
 
-        node = nodes[x, y];
-        return true;
+        node = null;
+        return false;
     }
 }
