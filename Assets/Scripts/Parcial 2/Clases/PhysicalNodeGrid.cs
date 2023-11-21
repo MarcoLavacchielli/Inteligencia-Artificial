@@ -6,7 +6,7 @@ using UnityEngine;
 public class PhysicalNodeGrid : MonoBehaviour
 {
     [SerializeField]
-    LayerMask unwalkable;
+    public LayerMask unwalkable;
 
     [SerializeField]
     int width = 5, height = 5;
