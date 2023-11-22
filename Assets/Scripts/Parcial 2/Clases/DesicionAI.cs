@@ -35,6 +35,10 @@ public class DesicionAI : MonoBehaviour
 
     IDesicion tree;
 
+    float alertLevel;
+
+    Vector3 playerPosition;
+
     private void Awake()
     {
         tree = new Branch
@@ -53,10 +57,33 @@ public class DesicionAI : MonoBehaviour
             },
             OnFalse = new Leaf(Patrol),
         };
-        /*
-         
-         */
+
+        //Tree nuevo del Profe
+        /*tree = new Branch
+        {
+            Predicate = () => detect.InLineOfSight(player.position),
+            OnTrue = new Branch
+            {
+                Predicate = () => Vector3.Distance(transform.position, player.position) < 3f,
+                OnTrue = new Branch
+                {
+                    OnTrue = new Leaf(Attack),
+                    OnFalse = new Leaf(Chase),
+                },
+                OnFalse = new Branch
+                {
+                    Predicate = () => alertLevel > .4f,
+                    OnTrue = new Leaf(Investigate),
+                    OnFalse = new Leaf(Patrol),
+                }
+            },
+        };*/
         block = new MaterialPropertyBlock { };
+    }
+
+    void GetOthers()
+    {
+
     }
 
     IEnumerator Start()
@@ -127,6 +154,10 @@ public class DesicionAI : MonoBehaviour
 
     private void Chase()
     {
+        //alertLevel += Time.deltaTime / 3;
+        //alertLevel = Math.Clamp01(alertLevel);
+
+        playerPosition = player.position;
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
 
@@ -152,6 +183,18 @@ public class DesicionAI : MonoBehaviour
         render.SetPropertyBlock(block);
 
         character.velocity = Vector3.zero;
+    }
+
+    private void Investigate()
+    {
+        block.SetColor("_Color", Color.green);
+        render.SetPropertyBlock(block);
+        // Ir a la ultima posicion donde estaba el jugador
+        character.velocity = Vector3.zero;
+
+        // Si esta muy cerca bajar el nivel de alerta
+        //alertLevel -= Time.deltaTime;
+        //alertLevel = Math.Clamp01(alertLevel);
     }
 }
 
