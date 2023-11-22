@@ -1871,7 +1871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1598751677}
-  offsetPublico: {x: -130, y: 10, z: -40}
+  offsetPublico: {x: -70, y: -30, z: 27}
 --- !u!1 &750545969
 GameObject:
   m_ObjectHideFlags: 0

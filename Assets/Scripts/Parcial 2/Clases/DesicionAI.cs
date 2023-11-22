@@ -61,28 +61,30 @@ public class DesicionAI : MonoBehaviour
 
     IEnumerator Start()
     {
-
         moving = false;
         yield return new WaitUntil(() => path != null && path.Count > 0);
         moving = true;
 
         yield return new WaitForSeconds(.1f);
-        for (int i = path.Count - 1; i > 0; i--)
+
+        while (true)  // Bucle infinito
         {
-            Node target; Vector3 dir;
-            do
+            for (int i = path.Count - 1; i > 0; i--)
             {
-                target = path[i - 1];
-                dir = (target.transform.position - transform.position);
-                character.velocity = dir.normalized * moveSpeed;
-                yield return null;
-            } while (Vector3.Distance(target.transform.position, transform.position) > 3f);
+                Node target; Vector3 dir;
+                do
+                {
+                    target = path[i - 1];
+                    dir = (target.transform.position - transform.position);
+                    character.velocity = dir.normalized * moveSpeed;
+                    yield return null;
+                } while (Vector3.Distance(target.transform.position, transform.position) > 3f);
+            }
+
+            character.velocity = Vector3.zero;
+            // No asignes path = null; aquí
+            yield return null;  // Añade esta línea para evitar que el bucle se ejecute demasiado rápido
         }
-
-        character.velocity = Vector3.zero;
-        path = null;
-
-        StartCoroutine(Start());
     }
 
     private void Update()
