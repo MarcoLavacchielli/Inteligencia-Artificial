@@ -155,7 +155,7 @@ public class DesicionAI : MonoBehaviour
     private void Chase()
     {
         //alertLevel += Time.deltaTime / 3;
-        //alertLevel = Math.Clamp01(alertLevel);
+        //alertLevel = Mathf.Clamp01(alertLevel);
 
         playerPosition = player.position;
         block.SetColor("_Color", Color.green);
@@ -194,7 +194,7 @@ public class DesicionAI : MonoBehaviour
 
         // Si esta muy cerca bajar el nivel de alerta
         //alertLevel -= Time.deltaTime;
-        //alertLevel = Math.Clamp01(alertLevel);
+        //alertLevel = Mathf.Clamp01(alertLevel);
     }
 }
 
