@@ -37,7 +37,8 @@ public class DesicionAI : MonoBehaviour
 
     float alertLevel;
 
-    Vector3 playerPosition;
+    private bool playerInSight = false;
+    private Vector3 lastKnownPlayerPosition;
 
     private void Awake()
     {
@@ -55,7 +56,12 @@ public class DesicionAI : MonoBehaviour
                 },
                 OnFalse = new Leaf(Seek),
             },
-            OnFalse = new Leaf(Patrol),
+            OnFalse = new Branch
+            {
+                Predicate = () => lastKnownPlayerPosition != Vector3.zero, // Agrega la condición para verificar si hay una última posición conocida
+                OnTrue = new Leaf(ReturnToLastKnownPosition), // Agrega una nueva hoja para volver a la última posición conocida
+                OnFalse = new Leaf(Patrol),
+            },
         };
 
         //Tree nuevo del Profe
@@ -81,6 +87,29 @@ public class DesicionAI : MonoBehaviour
         block = new MaterialPropertyBlock { };
     }
 
+    private void ReturnToLastKnownPosition()
+    {
+        block.SetColor("_Color", Color.yellow);
+        render.SetPropertyBlock(block);
+
+        GoTo(lastKnownPlayerPosition);
+
+        // Espera hasta llegar a la posición o hasta que el jugador esté a la vista
+        StartCoroutine(WaitForArrivalOrPlayerSight());
+    }
+
+    private IEnumerator WaitForArrivalOrPlayerSight()
+    {
+        yield return new WaitUntil(() => Vector3.Distance(transform.position, lastKnownPlayerPosition) < 1f || detect.InFieldOfView(player.position));
+
+        // Verifica si el jugador está a la vista después de llegar a la posición
+        if (!detect.InFieldOfView(player.position))
+        {
+            // Jugador no encontrado, reanudar la patrulla
+            lastKnownPlayerPosition = Vector3.zero;
+            Patrol();
+        }
+    }
     void GetOthers()
     {
 
@@ -94,29 +123,45 @@ public class DesicionAI : MonoBehaviour
 
         yield return new WaitForSeconds(.1f);
 
-        while (true)  // Bucle infinito
+        while (true)
         {
-            for (int i = path.Count - 1; i > 0; i--)
+            if (playerInSight)
             {
-                Node target; Vector3 dir;
-                do
+                // Player is in sight, continue with the existing logic
+                tree.Execute();
+            }
+            else
+            {
+                // Player is not in sight, move to the last known position or patrol
+                if (lastKnownPlayerPosition != Vector3.zero)
                 {
-                    target = path[i - 1];
-                    dir = (target.transform.position - transform.position);
-                    character.velocity = dir.normalized * moveSpeed;
-                    yield return null;
-                } while (Vector3.Distance(target.transform.position, transform.position) > 3f);
+                    // Move to the last known position of the player
+                    block.SetColor("_Color", Color.yellow);
+                    render.SetPropertyBlock(block);
+                    GoTo(lastKnownPlayerPosition);
+                }
+                else
+                {
+                    // Player not found, resume patrolling
+                    Patrol();
+                }
             }
 
-            character.velocity = Vector3.zero;
-            // No asignes path = null; aquí
-            yield return null;  // Añade esta línea para evitar que el bucle se ejecute demasiado rápido
+            yield return null;
         }
     }
 
     private void Update()
     {
         tree.Execute();
+
+        playerInSight = detect.InFieldOfView(player.position);
+
+        if (playerInSight)
+        {
+            // Update the last known position of the player
+            lastKnownPlayerPosition = player.position;
+        }
     }
 
     private void Patrol()
@@ -149,7 +194,7 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
 
-        GoTo(player.position);
+        GoTo(lastKnownPlayerPosition);
     }
 
     private void Chase()
@@ -157,7 +202,7 @@ public class DesicionAI : MonoBehaviour
         //alertLevel += Time.deltaTime / 3;
         //alertLevel = Mathf.Clamp01(alertLevel);
 
-        playerPosition = player.position;
+        lastKnownPlayerPosition = player.position;
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
 
@@ -189,8 +234,8 @@ public class DesicionAI : MonoBehaviour
     {
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
-        // Ir a la ultima posicion donde estaba el jugador
-        character.velocity = Vector3.zero;
+
+        lastKnownPlayerPosition = Vector3.zero;
 
         // Si esta muy cerca bajar el nivel de alerta
         //alertLevel -= Time.deltaTime;
