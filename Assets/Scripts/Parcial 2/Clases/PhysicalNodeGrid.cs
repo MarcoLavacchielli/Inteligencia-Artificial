@@ -53,7 +53,7 @@ public class PhysicalNodeGrid : MonoBehaviour
         }
     }
 
-    void Generate()
+    public void Generate()
     {
         if (nodesList != null)
         {
@@ -105,6 +105,22 @@ public class PhysicalNodeGrid : MonoBehaviour
             AddNeighbour(node, x - 1, y + 1);
             AddNeighbour(node, x + 1, y - 1);
         }
+    }
+
+    public void ClearGrid()
+    {
+        if (nodesList != null)
+        {
+            foreach (var item in nodesList)
+            {
+                if (item)
+                {
+                    DestroyImmediate(item.gameObject);
+                }
+            }
+        }
+
+        nodesList.Clear();
     }
 
     private void OnDrawGizmos()
