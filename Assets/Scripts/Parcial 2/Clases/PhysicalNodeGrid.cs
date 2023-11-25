@@ -125,7 +125,7 @@ public class PhysicalNodeGrid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (Application.isPlaying || nodesList == null) return;
+        /*if (Application.isPlaying || nodesList == null) return;
 
         Gizmos.color = Color.white;
         foreach (var node in nodesList)
@@ -138,7 +138,7 @@ public class PhysicalNodeGrid : MonoBehaviour
                 if (!wall)
                     Gizmos.DrawCube(pos, Vector3.one);
             }
-        }
+        }*/
     }
 
     private void AddNeighbour(Node node, int x, int y)
