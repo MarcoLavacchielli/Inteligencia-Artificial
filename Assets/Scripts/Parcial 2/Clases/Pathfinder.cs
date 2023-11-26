@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Pathfinder : MonoBehaviour
 {
-
     [SerializeField]
     public Node current, target;
 
@@ -56,16 +55,6 @@ public class Pathfinder : MonoBehaviour
             PathAlgorithm.DFS => current.DFS(end),
             _ => new List<Node>(),
         };
-        /* Es igual a lo de arriva:
-        switch (algorithm)
-        {
-            case PathAlgorithm.BFS:
-                return current.BFS(end);
-            case PathAlgorithm.DFS:
-                return current.DFS(end);
-        }
-        return new List<Node>();
-         */
     }
 
     public IEnumerator Pathfind(Node end)
@@ -99,5 +88,9 @@ public class Pathfinder : MonoBehaviour
                 from.transform.position, to.transform.position, f)
                 + offset;
         }
+    }
+    public void UpdateTarget(Node newTarget)
+    {
+        target = newTarget;
     }
 }
