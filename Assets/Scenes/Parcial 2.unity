@@ -27869,8 +27869,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 2111226669}
-  target: {fileID: 2111226669}
+  current: {fileID: 0}
+  target: {fileID: 0}
   algorithm: 0
   moveTime: 1
   offset: {x: 0, y: 1.5, z: 0}
@@ -51228,8 +51228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 835275298}
-  target: {fileID: 835275298}
+  current: {fileID: 0}
+  target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
@@ -53070,8 +53070,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 424586474}
-  target: {fileID: 424586474}
+  current: {fileID: 0}
+  target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
@@ -70974,8 +70974,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 1808526616}
-  target: {fileID: 1808526616}
+  current: {fileID: 0}
+  target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}

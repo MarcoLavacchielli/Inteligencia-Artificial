@@ -35,12 +35,13 @@ public class DesicionAI : MonoBehaviour
 
     IDesicion tree;
 
-    float alertLevel;
+    //float alertLevel;
 
     [SerializeField]
     Pathfinder pathfinder;
 
     private bool playerInSight = false;
+
     private Vector3 lastKnownPlayerPosition;
 
     private void Awake()
@@ -57,12 +58,12 @@ public class DesicionAI : MonoBehaviour
                     OnTrue = new Leaf(Attack),
                     OnFalse = new Leaf(Chase),
                 },
-                OnFalse = new Leaf(Seek),
+                OnFalse = new Leaf(ReturnToLastKnownPosition),
             },
             OnFalse = new Branch
             {
-                Predicate = () => lastKnownPlayerPosition != Vector3.zero, // Agrega la condición para verificar si hay una última posición conocida
-                OnTrue = new Leaf(ReturnToLastKnownPosition), // Agrega una nueva hoja para volver a la última posición conocida
+                Predicate = () => lastKnownPlayerPosition != Vector3.zero,
+                OnTrue = new Leaf(ReturnToLastKnownPosition),
                 OnFalse = new Leaf(Patrol),
             },
         };
@@ -113,10 +114,6 @@ public class DesicionAI : MonoBehaviour
             Patrol();
         }
     }
-    void GetOthers()
-    {
-
-    }
 
     IEnumerator Start()
     {
@@ -162,7 +159,6 @@ public class DesicionAI : MonoBehaviour
 
         if (playerInSight)
         {
-            // Update the last known position of the player
             lastKnownPlayerPosition = player.position;
         }
     }
@@ -212,14 +208,6 @@ public class DesicionAI : MonoBehaviour
         }
     }
 
-    private void Seek()
-    {
-        block.SetColor("_Color", Color.yellow);
-        render.SetPropertyBlock(block);
-
-        GoTo(lastKnownPlayerPosition);
-    }
-
     private void Chase()
     {
         //alertLevel += Time.deltaTime / 3;
@@ -263,7 +251,7 @@ public class DesicionAI : MonoBehaviour
         character.velocity = Vector3.zero;
     }
 
-    private void Investigate()
+    /*private void Investigate()
     {
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
@@ -273,7 +261,7 @@ public class DesicionAI : MonoBehaviour
         // Si esta muy cerca bajar el nivel de alerta
         //alertLevel -= Time.deltaTime;
         //alertLevel = Mathf.Clamp01(alertLevel);
-    }
+    }*/
 }
 
 interface IDesicion
