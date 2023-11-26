@@ -47,7 +47,7 @@ public class Pathfinder : MonoBehaviour
 
     }
 
-    List<Node> CallPathfind(Node end)
+    public List<Node> CallPathfind(Node end)
     {
         return algorithm switch
         {

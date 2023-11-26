@@ -51,7 +51,24 @@ public class DesicionAI : MonoBehaviour
     {
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
-        GoTo(lastKnownPlayerNode);
+
+        // Asignar el current solo si aún no se ha asignado
+        if (pathfinder.current == null)
+        {
+            pathfinder.current = grid.GetClosest(transform.position);
+        }
+
+        // Reiniciar el índice del nodo actual
+        currentNodeIndex = 0;
+
+        // Crear un nuevo camino desde el current al target en el Pathfinder
+        pathfinder.target = lastKnownPlayerNode;
+        pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
+
+        // Anular el movimiento propio del guardia
+        character.velocity = Vector3.zero;
+
+        // Iniciar la espera para llegar al destino o ver al jugador nuevamente
         StartCoroutine(WaitForArrivalOrPlayerSight());
         pathfinder.UpdateTarget(lastKnownPlayerNode);
     }
