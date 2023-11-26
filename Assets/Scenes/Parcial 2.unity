@@ -30141,7 +30141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938373, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938374, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: nodeGrid
@@ -51228,8 +51228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 0}
-  target: {fileID: 0}
+  current: {fileID: 835275298}
+  target: {fileID: 835275298}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
@@ -53070,8 +53070,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 0}
-  target: {fileID: 0}
+  current: {fileID: 424586474}
+  target: {fileID: 424586474}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
@@ -60087,7 +60087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938373, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938374, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: nodeGrid
@@ -60922,7 +60922,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938373, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1088315796642938374, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: nodeGrid
@@ -70974,8 +70974,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 0}
-  target: {fileID: 0}
+  current: {fileID: 1808526616}
+  target: {fileID: 1808526616}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}

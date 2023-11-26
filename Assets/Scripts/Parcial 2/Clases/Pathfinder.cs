@@ -19,7 +19,7 @@ public class Pathfinder : MonoBehaviour
     Vector3 offset = new(0, 1.5f, 0);
 
     [SerializeField]
-    List<Node> path = new();
+    public List<Node> path = new();
 
     BFS<Vector2Int> bfs = new()
     {

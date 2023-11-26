@@ -225,12 +225,22 @@ public class DesicionAI : MonoBehaviour
         //alertLevel += Time.deltaTime / 3;
         //alertLevel = Mathf.Clamp01(alertLevel);
 
+        // Guarda el nodo actual antes de borrarlo
+        Node previousTarget = pathfinder.target;
+
+        // Elimina el current y el target del Pathfinder y vacía la lista de path
+        pathfinder.current = null;
+        pathfinder.target = null;
+        pathfinder.path.Clear();
+
+        // Continúa con la lógica de Chase usando previousTarget según sea necesario
         lastKnownPlayerPosition = player.position;
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
 
         var dir = player.position - transform.position;
         character.velocity = dir.normalized * moveSpeed;
+
     }
 
     public void GoTo(Vector3 position)
