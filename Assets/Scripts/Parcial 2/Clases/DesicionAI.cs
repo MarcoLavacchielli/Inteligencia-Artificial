@@ -65,12 +65,52 @@ public class DesicionAI : MonoBehaviour
         pathfinder.target = lastKnownPlayerNode;
         pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
 
+        // Actualizar el nodo actual en el Pathfinder
+        pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
+
         // Anular el movimiento propio del guardia
         character.velocity = Vector3.zero;
 
         // Iniciar la espera para llegar al destino o ver al jugador nuevamente
-        StartCoroutine(WaitForArrivalOrPlayerSight());
+        StartCoroutine(FollowPathAndCheckForPlayer());
         pathfinder.UpdateTarget(lastKnownPlayerNode);
+    }
+
+    private IEnumerator FollowPathAndCheckForPlayer()
+    {
+        int targetIndex = 0; // Indice del nodo actual en el camino
+
+        while (targetIndex < pathfinder.path.Count)
+        {
+            Node targetNode = pathfinder.path[targetIndex];
+
+            // Moverse hacia el nodo objetivo si no está lo suficientemente cerca
+            while (Vector3.Distance(targetNode.transform.position, transform.position) > 1f)
+            {
+                Vector3 dir = (targetNode.transform.position - transform.position);
+                character.velocity = dir.normalized * moveSpeed;
+
+                yield return null;
+            }
+
+            // Detener el movimiento una vez que está lo suficientemente cerca del nodo
+            character.velocity = Vector3.zero;
+
+            // Actualizar el nodo actual en el Pathfinder
+            pathfinder.current = targetNode;
+
+            // Incrementar el índice del nodo objetivo
+            targetIndex++;
+
+            // Esperar un breve momento antes de pasar al siguiente nodo
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // Una vez que ha recorrido todo el camino, anular el movimiento
+        character.velocity = Vector3.zero;
+
+        // Iniciar la espera para llegar al destino o ver al jugador nuevamente
+        StartCoroutine(WaitForArrivalOrPlayerSight());
     }
 
     private IEnumerator WaitForArrivalOrPlayerSight()

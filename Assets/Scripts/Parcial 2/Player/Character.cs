@@ -11,15 +11,21 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        var lvel = transform.InverseTransformDirection(velocity);
-        // animator.SetFloat("_MoveSpeed", velocity.magnitude);
-        //animator.SetFloat("_DirX", velocity.normalized.x);
-        //animator.SetFloat("_DirY", velocity.normalized.z);
+        // Calcular la dirección normalizada
+        Vector3 direction = velocity.normalized;
 
-        transform.position += velocity * Time.deltaTime;
-        if (velocity.sqrMagnitude > 0)
+        // Calcular la velocidad considerando la magnitud original
+        Vector3 adjustedVelocity = direction * velocity.magnitude;
+
+        var lvel = transform.InverseTransformDirection(adjustedVelocity);
+        // animator.SetFloat("_MoveSpeed", adjustedVelocity.magnitude);
+        //animator.SetFloat("_DirX", direction.x);
+        //animator.SetFloat("_DirY", direction.z);
+
+        transform.position += adjustedVelocity * Time.deltaTime;
+        if (adjustedVelocity.sqrMagnitude > 0)
         {
-            transform.forward = velocity.normalized;
+            transform.forward = direction;
         }
 
         // Verificar si el jugador está sobre un nodo
