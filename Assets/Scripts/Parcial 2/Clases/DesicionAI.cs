@@ -37,6 +37,9 @@ public class DesicionAI : MonoBehaviour
 
     float alertLevel;
 
+    [SerializeField]
+    Pathfinder pathfinder;
+
     private bool playerInSight = false;
     private Vector3 lastKnownPlayerPosition;
 
@@ -168,19 +171,39 @@ public class DesicionAI : MonoBehaviour
     {
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
+
         // Verifica si hay nodos en la ruta de patrulla
         if (path != null && path.Count > 0)
         {
             // Establece el destino como el nodo actual en la ruta de patrulla
             Node targetNode = path[currentNodeIndex];
-            // Calcula la direcci�n hacia el nodo
+
+            // Calcula la dirección hacia el nodo
             Vector3 dir = (targetNode.transform.position - transform.position);
+
             // Actualiza la velocidad del personaje hacia el nodo
             character.velocity = dir.normalized * moveSpeed;
+
             // Si el personaje llega lo suficientemente cerca al nodo actual, pasa al siguiente nodo
             if (Vector3.Distance(targetNode.transform.position, transform.position) < 1f)
             {
-                currentNodeIndex = (currentNodeIndex + 1) % path.Count;
+                // Actualiza el current al nodo actual
+                pathfinder.current = targetNode;
+
+                // Incrementa el índice del nodo actual
+                currentNodeIndex++;
+
+                // Si hay más nodos en la ruta, actualiza el target al siguiente nodo en DesicionAI
+                if (currentNodeIndex < path.Count)
+                {
+                    pathfinder.target = path[currentNodeIndex];
+                }
+                else
+                {
+                    // Si ya no hay más nodos en la ruta, reinicia la patrulla
+                    currentNodeIndex = 0;
+                    pathfinder.target = path[currentNodeIndex];
+                }
             }
         }
         else

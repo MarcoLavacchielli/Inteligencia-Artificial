@@ -7,7 +7,7 @@ public class Pathfinder : MonoBehaviour
 {
 
     [SerializeField]
-    Node current, target;
+    public Node current, target;
 
     [SerializeField]
     PathAlgorithm algorithm;
@@ -68,7 +68,7 @@ public class Pathfinder : MonoBehaviour
          */
     }
 
-    IEnumerator Pathfind(Node end)
+    public IEnumerator Pathfind(Node end)
     {
         if (current == end)
             yield break;
