@@ -78,7 +78,7 @@ public class DesicionAI : MonoBehaviour
 
     private IEnumerator FollowPathAndCheckForPlayer()
     {
-        int targetIndex = 0; // Indice del nodo actual en el camino
+        int targetIndex = 0; // Índice del nodo actual en el camino
 
         while (targetIndex < pathfinder.path.Count)
         {
@@ -101,6 +101,29 @@ public class DesicionAI : MonoBehaviour
 
             // Incrementar el índice del nodo objetivo
             targetIndex++;
+
+            if (targetIndex < pathfinder.path.Count)
+            {
+                // Cambiar el target al siguiente nodo en el camino
+                pathfinder.target = pathfinder.path[targetIndex];
+            }
+            else
+            {
+                // Llegó al final del camino, cambiar el target al primer waypoint
+                pathfinder.target = path[0];
+
+                // Generar un nuevo camino desde el current al nuevo target
+                pathfinder.path = pathfinder.CallPathfind(pathfinder.target);
+
+                // Si el nuevo camino no se ha generado correctamente, salir de la función
+                if (pathfinder.path.Count == 0)
+                {
+                    yield break;
+                }
+
+                // Resetear el índice del nodo objetivo
+                targetIndex = 0;
+            }
 
             // Esperar un breve momento antes de pasar al siguiente nodo
             yield return new WaitForSeconds(0.1f);
