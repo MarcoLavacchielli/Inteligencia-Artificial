@@ -11,11 +11,11 @@ public class DesicionAI : MonoBehaviour
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] Transform player;
     [SerializeField] Renderer render;
-    [SerializeField] List<Node> path = new();
+    [SerializeField] List<Node> path = new List<Node>();
     int currentNodeIndex = 0;
     bool moving;
     MaterialPropertyBlock block;
-    IDesicion tree;
+    IDecision tree;
     [SerializeField] Pathfinder pathfinder;
     private bool playerInSight = false;
     private Node lastKnownPlayerNode;
@@ -55,26 +55,20 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
 
-        // Asignar el current solo si aún no se ha asignado
         if (pathfinder.current == null)
         {
             pathfinder.current = grid.GetClosest(transform.position);
         }
 
-        // Reiniciar el índice del nodo actual
         currentNodeIndex = 0;
 
-        // Crear un nuevo camino desde el current al target en el Pathfinder
         pathfinder.target = lastKnownPlayerNode;
         pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
 
-        // Actualizar el nodo actual en el Pathfinder
         pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
 
-        // Anular el movimiento propio del guardia
         character.velocity = Vector3.zero;
 
-        // Iniciar la espera para llegar al destino o ver al jugador nuevamente
         StartCoroutine(FollowPathAndCheckForPlayer());
         pathfinder.UpdateTarget(lastKnownPlayerNode);
 
@@ -87,13 +81,12 @@ public class DesicionAI : MonoBehaviour
 
     private IEnumerator FollowPathAndCheckForPlayer()
     {
-        int targetIndex = 0; // Índice del nodo actual en el camino
+        int targetIndex = 0;
 
         while (targetIndex < pathfinder.path.Count)
         {
             Node targetNode = pathfinder.path[targetIndex];
 
-            // Moverse hacia el nodo objetivo si no está lo suficientemente cerca
             while (Vector3.Distance(targetNode.transform.position, transform.position) > 1f)
             {
                 Vector3 dir = (targetNode.transform.position - transform.position);
@@ -102,23 +95,18 @@ public class DesicionAI : MonoBehaviour
                 yield return null;
             }
 
-            // Detener el movimiento una vez que está lo suficientemente cerca del nodo
             character.velocity = Vector3.zero;
 
-            // Actualizar el nodo actual en el Pathfinder
             pathfinder.current = targetNode;
 
-            // Incrementar el índice del nodo objetivo
             targetIndex++;
 
             if (targetIndex < pathfinder.path.Count)
             {
-                // Cambiar el target al siguiente nodo en el camino
                 pathfinder.target = pathfinder.path[targetIndex];
             }
             else
             {
-                // Llegó al final del camino
                 if (pathfinder.target == lastKnownPlayerNode)
                 {
                     lastKnownPlayerNode = null;
@@ -126,30 +114,23 @@ public class DesicionAI : MonoBehaviour
                     yield break;
                 }
 
-                // Cambiar el target al primer waypoint
                 pathfinder.target = path[0];
 
-                // Generar un nuevo camino desde el current al nuevo target
                 pathfinder.path = pathfinder.CallPathfind(pathfinder.target);
 
-                // Si el nuevo camino no se ha generado correctamente, salir de la función
                 if (pathfinder.path.Count == 0)
                 {
                     yield break;
                 }
 
-                // Resetear el índice del nodo objetivo
                 targetIndex = 0;
             }
 
-            // Esperar un breve momento antes de pasar al siguiente nodo
             yield return new WaitForSeconds(0.1f);
         }
 
-        // Una vez que ha recorrido todo el camino, anular el movimiento
         character.velocity = Vector3.zero;
 
-        // Iniciar la espera para llegar al destino o ver al jugador nuevamente
         StartCoroutine(WaitForArrivalOrPlayerSight());
     }
 
@@ -177,12 +158,17 @@ public class DesicionAI : MonoBehaviour
         }
     }
 
-    IEnumerator Start()
+    private void Start()
+    {
+        StartCoroutine(StartAI());
+    }
+
+    private IEnumerator StartAI()
     {
         moving = false;
         yield return new WaitUntil(() => path != null && path.Count > 0);
         moving = true;
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(0.1f);
 
         while (true)
         {
@@ -288,26 +274,26 @@ public class DesicionAI : MonoBehaviour
     }
 }
 
-interface IDesicion
+interface IDecision
 {
     void Execute();
 }
 
-class Branch : IDesicion
+class Branch : IDecision
 {
     public Func<bool> Predicate;
-    public IDesicion OnTrue, OnFalse;
+    public IDecision OnTrue, OnFalse;
 
     public void Execute()
     {
         if (Predicate())
-            OnTrue.Execute();
+            OnTrue?.Execute();
         else
-            OnFalse.Execute();
+            OnFalse?.Execute();
     }
 }
 
-class Leaf : IDesicion
+class Leaf : IDecision
 {
     public Action Action;
 
@@ -318,6 +304,6 @@ class Leaf : IDesicion
 
     public void Execute()
     {
-        Action();
+        Action?.Invoke();
     }
 }
