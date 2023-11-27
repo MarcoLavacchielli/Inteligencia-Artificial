@@ -19,6 +19,7 @@ public class DesicionAI : MonoBehaviour
     [SerializeField] Pathfinder pathfinder;
     private bool playerInSight = false;
     private Node lastKnownPlayerNode;
+    public static List<DesicionAI> allGuardians = new List<DesicionAI>();
 
     private void Awake()
     {
@@ -45,6 +46,8 @@ public class DesicionAI : MonoBehaviour
         };
 
         block = new MaterialPropertyBlock { };
+
+        allGuardians.Add(this);
     }
 
     private void ReturnToLastKnownPosition()
@@ -74,6 +77,12 @@ public class DesicionAI : MonoBehaviour
         // Iniciar la espera para llegar al destino o ver al jugador nuevamente
         StartCoroutine(FollowPathAndCheckForPlayer());
         pathfinder.UpdateTarget(lastKnownPlayerNode);
+
+        foreach (DesicionAI guard in allGuardians)
+        {
+            guard.lastKnownPlayerNode = lastKnownPlayerNode;
+            guard.StartCoroutine(guard.FollowPathAndCheckForPlayer());
+        }
     }
 
     private IEnumerator FollowPathAndCheckForPlayer()
@@ -109,7 +118,15 @@ public class DesicionAI : MonoBehaviour
             }
             else
             {
-                // Llegó al final del camino, cambiar el target al primer waypoint
+                // Llegó al final del camino
+                if (pathfinder.target == lastKnownPlayerNode)
+                {
+                    lastKnownPlayerNode = null;
+                    Patrol();
+                    yield break;
+                }
+
+                // Cambiar el target al primer waypoint
                 pathfinder.target = path[0];
 
                 // Generar un nuevo camino desde el current al nuevo target
