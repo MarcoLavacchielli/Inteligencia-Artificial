@@ -32,6 +32,7 @@ public class Character : MonoBehaviour
         CheckNodeUnderPlayer();
     }
 
+    // Hecho para checkeo, aparte que es algo visual y funciona, ahora no se ve, pero en el testing funcaba
     private void CheckNodeUnderPlayer()
     {
         // Obtener el nodo debajo del jugador usando el script PhysicalNodeGrid
