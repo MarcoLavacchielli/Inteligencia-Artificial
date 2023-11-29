@@ -262,7 +262,7 @@ public class DesicionAI : MonoBehaviour
         var start = grid.GetClosest(transform.position);
         var goal = node;
         if (!start || !goal || start == goal) return;
-        path = start.ThetaStar(goal);
+        path = start.AStar(goal);
         path.Reverse();
     }
 
