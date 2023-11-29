@@ -198,11 +198,6 @@ public class DesicionAI : MonoBehaviour
     {
         tree.Execute();
         playerInSight = detect.InFieldOfView(player.position);
-
-        if (playerInSight)
-        {
-            lastKnownPlayerNode = grid.GetClosest(player.position);
-        }
     }
 
     private void Patrol()
