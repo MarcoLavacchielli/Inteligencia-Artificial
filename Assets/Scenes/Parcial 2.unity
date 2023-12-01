@@ -27869,12 +27869,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  desicionAI: {fileID: 899298241}
   current: {fileID: 0}
   target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []
+--- !u!114 &899298241 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
+  m_PrefabInstance: {fileID: 1315669772}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847380086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d8d8628c6e46841a74243b6e5a4d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &904807152
 GameObject:
   m_ObjectHideFlags: 0
@@ -30151,10 +30163,6 @@ PrefabInstance:
       propertyPath: grid
       value: 
       objectReference: {fileID: 78096286}
-    - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
-      propertyPath: node
-      value: 
-      objectReference: {fileID: 5871370528979182080, guid: 7e4852d4715908e44adabd67c4dfa4f1, type: 3}
     - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: player
       value: 
@@ -42222,10 +42230,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 78096286}
     - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
-      propertyPath: node
-      value: 
-      objectReference: {fileID: 5871370528979182080, guid: 7e4852d4715908e44adabd67c4dfa4f1, type: 3}
-    - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1598751677}
@@ -51236,12 +51240,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  desicionAI: {fileID: 1585562616}
   current: {fileID: 0}
   target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []
+--- !u!114 &1585562616 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
+  m_PrefabInstance: {fileID: 1893458393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585562608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d8d8628c6e46841a74243b6e5a4d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1586249285
 GameObject:
   m_ObjectHideFlags: 0
@@ -53078,12 +53094,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  desicionAI: {fileID: 1631869947}
   current: {fileID: 0}
   target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []
+--- !u!114 &1631869947 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
+  m_PrefabInstance: {fileID: 969589631}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897651352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d8d8628c6e46841a74243b6e5a4d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1640463469
 GameObject:
   m_ObjectHideFlags: 0
@@ -60106,10 +60134,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 78096286}
     - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
-      propertyPath: node
-      value: 
-      objectReference: {fileID: 5871370528979182080, guid: 7e4852d4715908e44adabd67c4dfa4f1, type: 3}
-    - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1598751677}
@@ -60944,10 +60968,6 @@ PrefabInstance:
       propertyPath: grid
       value: 
       objectReference: {fileID: 78096286}
-    - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
-      propertyPath: node
-      value: 
-      objectReference: {fileID: 5871370528979182080, guid: 7e4852d4715908e44adabd67c4dfa4f1, type: 3}
     - target: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
       propertyPath: player
       value: 
@@ -70990,12 +71010,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0752236c15ce244a16cddcf34ac214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  desicionAI: {fileID: 2139104645}
   current: {fileID: 0}
   target: {fileID: 0}
   algorithm: 0
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []
+--- !u!114 &2139104645 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1088315796642938375, guid: 4cc0968819f13c3429e631faccf5e85c, type: 3}
+  m_PrefabInstance: {fileID: 1907697566}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356975165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d8d8628c6e46841a74243b6e5a4d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2142716693
 GameObject:
   m_ObjectHideFlags: 0

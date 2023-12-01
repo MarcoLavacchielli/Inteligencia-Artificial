@@ -17,7 +17,6 @@ public class DesicionAI : MonoBehaviour
     MaterialPropertyBlock block;
     IDecision tree;
     [SerializeField] Pathfinder pathfinder;
-    [SerializeField] Node node;
     private bool playerInSight = false;
     private Node lastKnownPlayerNode;
     public static List<DesicionAI> allGuardians = new List<DesicionAI>();
@@ -127,7 +126,7 @@ public class DesicionAI : MonoBehaviour
 
                 pathfinder.target = path[0];
 
-                pathfinder.path = node.AStar(pathfinder.target);
+                pathfinder.path = pathfinder.CallPathfind(pathfinder.target);
 
                 if (pathfinder.path.Count == 0)
                 {
