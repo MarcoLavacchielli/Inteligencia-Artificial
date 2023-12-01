@@ -50,6 +50,15 @@ public class DesicionAI : MonoBehaviour
 
         allGuardians.Add(this);
     }
+    private void Start()
+    {
+        StartCoroutine(StartAI());
+    }
+
+    private void Update()
+    {
+        tree.Execute();
+    }
 
     private void ReturnToLastKnownPosition()
     {
@@ -86,7 +95,6 @@ public class DesicionAI : MonoBehaviour
         foreach (DesicionAI guard in allGuardians)
         {
             guard.lastKnownPlayerNode = lastKnownPlayerNode;
-            //guard.StartCoroutine(guard.FollowPathAndCheckForPlayer());
         }
     }
 
@@ -143,10 +151,6 @@ public class DesicionAI : MonoBehaviour
         character.velocity = Vector3.zero;
     }
 
-    private void Start()
-    {
-        StartCoroutine(StartAI());
-    }
 
     private IEnumerator StartAI()
     {
@@ -177,12 +181,6 @@ public class DesicionAI : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    private void Update()
-    {
-        tree.Execute();
-        playerInSight = detect.InFieldOfView(player.position);
     }
 
     private void Patrol()
@@ -225,6 +223,7 @@ public class DesicionAI : MonoBehaviour
 
     private void Chase()
     {
+        playerInSight = detect.InFieldOfView(player.position);
         Node previousTarget = pathfinder.target;
         pathfinder.current = null;
         pathfinder.target = null;
