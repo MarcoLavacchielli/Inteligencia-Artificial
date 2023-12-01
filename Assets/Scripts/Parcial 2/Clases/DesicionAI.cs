@@ -52,6 +52,7 @@ public class DesicionAI : MonoBehaviour
 
     private void ReturnToLastKnownPosition()
     {
+
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
 
@@ -67,6 +68,15 @@ public class DesicionAI : MonoBehaviour
 
         pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
 
+        Vector3 current = transform.position;
+
+        foreach (var node in pathfinder.path)
+        {
+            Debug.DrawLine(current, node.WorldPosition, Color.red, 99);
+
+            current = node.WorldPosition;
+        }
+
         character.velocity = Vector3.zero;
 
         StartCoroutine(FollowPathAndCheckForPlayer());
@@ -75,7 +85,7 @@ public class DesicionAI : MonoBehaviour
         foreach (DesicionAI guard in allGuardians)
         {
             guard.lastKnownPlayerNode = lastKnownPlayerNode;
-            guard.StartCoroutine(guard.FollowPathAndCheckForPlayer());
+            //guard.StartCoroutine(guard.FollowPathAndCheckForPlayer());
         }
     }
 
