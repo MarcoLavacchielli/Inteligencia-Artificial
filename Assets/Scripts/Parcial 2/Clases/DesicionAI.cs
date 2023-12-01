@@ -169,7 +169,6 @@ public class DesicionAI : MonoBehaviour
                 {
                     block.SetColor("_Color", Color.yellow);
                     render.SetPropertyBlock(block);
-                    GoTo(lastKnownPlayerNode);
                 }
                 else
                 {
@@ -231,16 +230,6 @@ public class DesicionAI : MonoBehaviour
         render.SetPropertyBlock(block);
         var dir = player.position - transform.position;
         character.velocity = dir.normalized * moveSpeed;
-    }
-
-    public void GoTo(Node node)
-    {
-        if (moving) return;
-        var start = grid.GetClosest(transform.position);
-        var goal = node;
-        if (!start || !goal || start == goal) return;
-        path = start.AStar(goal);
-        path.Reverse();
     }
 
     private void Attack()

@@ -20,7 +20,6 @@ public class Node : MonoBehaviour
 
     private void OnValidate()
     {
-        //print("Cambie valor en: " + gameObject.name);
         if (TryGetComponent<MeshRenderer>(out var rend))
         {
             var block = new MaterialPropertyBlock();
@@ -70,8 +69,8 @@ public class Node : MonoBehaviour
 
     public List<Node> BFS(Node target)
     {
-        var pending = new Queue<Node>(); // Por Visitar
-        var path = new Dictionary<Node, Node>(); // Camino
+        var pending = new Queue<Node>();
+        var path = new Dictionary<Node, Node>();
         pending.Enqueue(this);
 
         while (pending.Count > 0)
@@ -173,8 +172,8 @@ public class Node : MonoBehaviour
 
     public List<Node> GreedyBFS(Node target)
     {
-        var pending = new PriorityQueueMin<Node>(); // Por Visitar
-        var path = new Dictionary<Node, Node>(); // Camino
+        var pending = new PriorityQueueMin<Node>();
+        var path = new Dictionary<Node, Node>();
         pending.Enqueue(this, 0f);
 
         while (pending.Count > 0)
@@ -204,7 +203,7 @@ public class Node : MonoBehaviour
         var pending = new PriorityQueueMin<Node>();
         pending.Enqueue(this, 1f);
 
-        var path = new Dictionary<Node, Node>(); // Camino
+        var path = new Dictionary<Node, Node>();
         var costs = new Dictionary<Node, float>();
         costs.Add(this, 0f);
 

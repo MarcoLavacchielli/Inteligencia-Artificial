@@ -91,10 +91,6 @@ public class NodeGrid : MonoBehaviour
 
         path_bfs = bfs.FindPath(start, end, 100);
         path_dfs = dfs.FindPath(start, end, 100);
-        //if (path_bfs.Count == 0)
-        //{
-        //    print("No se econtro camino");
-        //}
     }
 
     static Vector3 ToVec3(Vector2Int cell) => new Vector3(cell.x, 0, cell.y)

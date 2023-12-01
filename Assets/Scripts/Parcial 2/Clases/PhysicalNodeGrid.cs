@@ -84,11 +84,9 @@ public class PhysicalNodeGrid : MonoBehaviour
                 var node = Instantiate(prefab, transform);
                 node.transform.position = pos;
                 nodesList.Add(node);
-                //node.color = Random.ColorHSV(0f, 1f, .25f, .95f, .1f, .95f);
             }
         }
 
-        // Setup neighbours
         foreach (var node in nodesList)
         {
             var pos = node.transform.position;
@@ -123,29 +121,10 @@ public class PhysicalNodeGrid : MonoBehaviour
         nodesList.Clear();
     }
 
-    private void OnDrawGizmos()
-    {
-        /*if (Application.isPlaying || nodesList == null) return;
-
-        Gizmos.color = Color.white;
-        foreach (var node in nodesList)
-        {
-            if (node != null)  // Add null check for each node
-            {
-                var pos = node.transform.position;
-                bool wall = Physics.BoxCast(pos + Vector3.up * 10, Vector3.one / 2, Vector3.down, Quaternion.identity, 20f, unwalkable);
-
-                if (!wall)
-                    Gizmos.DrawCube(pos, Vector3.one);
-            }
-        }*/
-    }
-
     private void AddNeighbour(Node node, int x, int y)
     {
         if (TryGetNode(x, y, out var n) && n != null)
         {
-            // Verificar si la conexión atraviesa un objeto unwalkable
             var direction = n.transform.position - node.transform.position;
             var distance = direction.magnitude;
             var hit = Physics.Raycast(node.transform.position, direction.normalized, distance, unwalkable);

@@ -21,7 +21,7 @@ public class ViewDetection : MonoBehaviour
 
     private void Update()
     {
-        // Tu lógica de detección y comportamiento aquí
+        
     }
 
     public bool InFieldOfView(Vector3 point)
