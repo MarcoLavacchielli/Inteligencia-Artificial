@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,55 +14,93 @@ public class DesicionAI : MonoBehaviour
     int currentNodeIndex = 0;
     bool moving;
     MaterialPropertyBlock block;
-    IDecision tree;
+    public State currentState;
     [SerializeField] Pathfinder pathfinder;
     private bool playerInSight = false;
     private Node lastKnownPlayerNode;
     public static List<DesicionAI> allGuardians = new List<DesicionAI>();
+    float attackDistance = 2.0f;
+    private static bool anyGuardInReturnState = false;
+
+    public enum State
+    {
+        Patrol,
+        Chase,
+        Attack,
+        ReturnToLastKnownPosition
+    }
 
     private void Awake()
     {
-        tree = new Branch
-        {
-            Predicate = () => detect.InFieldOfView(player.position),
-            OnTrue = new Branch
-            {
-                Predicate = () => detect.InLineOfSight(player.position),
-                OnTrue = new Branch
-                {
-                    Predicate = () => Vector3.Distance(transform.position, player.position) < 3f,
-                    OnTrue = new Leaf(Attack),
-                    OnFalse = new Leaf(Chase),
-                },
-                OnFalse = new Leaf(ReturnToLastKnownPosition),
-            },
-            OnFalse = new Branch
-            {
-                Predicate = () => lastKnownPlayerNode != null,
-                OnTrue = new Leaf(ReturnToLastKnownPosition),
-                OnFalse = new Leaf(Patrol),
-            },
-        };
-
         block = new MaterialPropertyBlock { };
-
         allGuardians.Add(this);
-    }
-    private void Start()
-    {
-        StartCoroutine(StartAI());
     }
 
     private void Update()
     {
-        tree.Execute();
+        UpdateState();
+    }
+
+    private void UpdateState()
+    {
+        switch (currentState)
+        {
+            case State.Patrol:
+                Patrol();
+                if (detect.InFieldOfView(player.position))
+                {
+                    ChangeState(State.Chase);
+                }
+                break;
+            case State.Chase:
+                Chase();
+                if (!detect.InFieldOfView(player.position))
+                {
+                    ChangeState(State.ReturnToLastKnownPosition);
+                }
+                else if (Vector3.Distance(transform.position, player.position) < attackDistance)
+                {
+                    ChangeState(State.Attack);
+                }
+                break;
+            case State.Attack:
+                Attack();
+                if (Vector3.Distance(transform.position, player.position) > attackDistance)
+                {
+                    ChangeState(State.Chase);
+                }
+                break;
+            case State.ReturnToLastKnownPosition:
+                ReturnToLastKnownPosition();
+                if (detect.InFieldOfView(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f)
+                {
+                    ChangeState(State.Patrol);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ChangeState(State newState)
+    {
+        currentState = newState;
     }
 
     private void ReturnToLastKnownPosition()
     {
-
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
+
+        if (!anyGuardInReturnState)
+        {
+            anyGuardInReturnState = true;
+
+            foreach (DesicionAI guard in allGuardians)
+            {
+                guard.ChangeState(State.ReturnToLastKnownPosition);
+            }
+        }
 
         if (pathfinder.current == null)
         {
@@ -82,7 +119,6 @@ public class DesicionAI : MonoBehaviour
         foreach (var node in pathfinder.path)
         {
             Debug.DrawLine(current, node.WorldPosition, Color.red, 99);
-
             current = node.WorldPosition;
         }
 
@@ -128,7 +164,7 @@ public class DesicionAI : MonoBehaviour
                 if (pathfinder.target == lastKnownPlayerNode)
                 {
                     lastKnownPlayerNode = null;
-                    Patrol();
+                    ChangeState(State.Patrol);
                     yield break;
                 }
 
@@ -148,36 +184,6 @@ public class DesicionAI : MonoBehaviour
         }
 
         character.velocity = Vector3.zero;
-    }
-
-    private IEnumerator StartAI()
-    {
-        moving = false;
-        yield return new WaitUntil(() => path != null && path.Count > 0);
-        moving = true;
-        yield return new WaitForSeconds(0.1f);
-
-        while (true)
-        {
-            if (playerInSight)
-            {
-                tree.Execute();
-            }
-            else
-            {
-                if (lastKnownPlayerNode != null)
-                {
-                    block.SetColor("_Color", Color.yellow);
-                    render.SetPropertyBlock(block);
-                }
-                else
-                {
-                    Patrol();
-                }
-            }
-
-            yield return null;
-        }
     }
 
     private void Patrol()
@@ -237,39 +243,5 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.red);
         render.SetPropertyBlock(block);
         character.velocity = Vector3.zero;
-    }
-}
-
-interface IDecision
-{
-    void Execute();
-}
-
-class Branch : IDecision
-{
-    public Func<bool> Predicate;
-    public IDecision OnTrue, OnFalse;
-
-    public void Execute()
-    {
-        if (Predicate())
-            OnTrue?.Execute();
-        else
-            OnFalse?.Execute();
-    }
-}
-
-class Leaf : IDecision
-{
-    public Action Action;
-
-    public Leaf(Action action)
-    {
-        Action = action;
-    }
-
-    public void Execute()
-    {
-        Action?.Invoke();
     }
 }
