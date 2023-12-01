@@ -130,32 +130,6 @@ public class DesicionAI : MonoBehaviour
         }
 
         character.velocity = Vector3.zero;
-
-        StartCoroutine(WaitForArrivalOrPlayerSight());
-    }
-
-    private IEnumerator WaitForArrivalOrPlayerSight()
-    {
-        yield return new WaitUntil(() => lastKnownPlayerNode != null && (Vector3.Distance(transform.position, lastKnownPlayerNode.transform.position) < 1f || detect.InFieldOfView(player.position)));
-
-        if (!detect.InFieldOfView(player.position))
-        {
-            if (path != null && currentNodeIndex == path.Count - 1)
-            {
-                character.velocity = Vector3.zero;
-                moving = false;
-
-                if (!detect.InFieldOfView(player.position))
-                {
-                    lastKnownPlayerNode = null;
-                    Patrol();
-                    yield break;
-                }
-            }
-
-            lastKnownPlayerNode = null;
-            Patrol();
-        }
     }
 
     private void Start()
