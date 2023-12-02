@@ -12,7 +12,6 @@ public class DesicionAI : MonoBehaviour
     [SerializeField] Renderer render;
     [SerializeField] List<Node> path = new List<Node>();
     int currentNodeIndex = 0;
-    bool moving;
     MaterialPropertyBlock block;
     public State currentState;
     [SerializeField] Pathfinder pathfinder;
@@ -72,9 +71,13 @@ public class DesicionAI : MonoBehaviour
                 break;
             case State.ReturnToLastKnownPosition:
                 ReturnToLastKnownPosition();
-                if (detect.InFieldOfView(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f)
+                if (detect.InFieldOfView(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
                 {
                     ChangeState(State.Patrol);
+                }
+                else if (detect.InFieldOfView(player.position))
+                {
+                    ChangeState(State.Chase);
                 }
                 break;
             default:
@@ -92,7 +95,7 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
 
-        if (!anyGuardInReturnState)
+        /*if (!anyGuardInReturnState)
         {
             anyGuardInReturnState = true;
 
@@ -100,7 +103,7 @@ public class DesicionAI : MonoBehaviour
             {
                 guard.ChangeState(State.ReturnToLastKnownPosition);
             }
-        }
+        }*/
 
         if (pathfinder.current == null)
         {
@@ -145,6 +148,12 @@ public class DesicionAI : MonoBehaviour
             {
                 Vector3 dir = (targetNode.transform.position - transform.position);
                 character.velocity = dir.normalized * moveSpeed;
+
+                if (detect.InFieldOfView(player.position))
+                {
+                    ChangeState(State.Chase);
+                    yield break;
+                }
 
                 yield return null;
             }
@@ -226,7 +235,6 @@ public class DesicionAI : MonoBehaviour
 
     private void Chase()
     {
-        playerInSight = detect.InFieldOfView(player.position);
         Node previousTarget = pathfinder.target;
         pathfinder.current = null;
         pathfinder.target = null;
