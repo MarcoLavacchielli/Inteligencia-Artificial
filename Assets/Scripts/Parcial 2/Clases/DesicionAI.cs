@@ -20,13 +20,15 @@ public class DesicionAI : MonoBehaviour
     public static List<DesicionAI> allGuardians = new List<DesicionAI>();
     float attackDistance = 2.0f;
     private static bool anyGuardInReturnState = false;
+    bool cleanOne = false;
 
     public enum State
     {
         Patrol,
         Chase,
         Attack,
-        ReturnToLastKnownPosition
+        ReturnToLastKnownPosition,
+        HomeComing
     }
 
     private void Awake()
@@ -73,6 +75,17 @@ public class DesicionAI : MonoBehaviour
                 ReturnToLastKnownPosition();
                 if (detect.InFieldOfView(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
                 {
+                    ChangeState(State.HomeComing);
+                }
+                else if (detect.InFieldOfView(player.position))
+                {
+                    ChangeState(State.Chase);
+                }
+                break;
+            case State.HomeComing:
+                HomeComing();
+                if (detect.InFieldOfView(path[0].WorldPosition) && Vector3.Distance(transform.position, path[0].WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
+                {
                     ChangeState(State.Patrol);
                 }
                 else if (detect.InFieldOfView(player.position))
@@ -88,6 +101,21 @@ public class DesicionAI : MonoBehaviour
     private void ChangeState(State newState)
     {
         currentState = newState;
+    }
+
+    private void HomeComing()
+    {
+        block.SetColor("_Color", Color.magenta);
+        render.SetPropertyBlock(block);
+
+        if(cleanOne == false)
+        {
+            pathfinder.path.Clear();
+            Debug.Log("Clean");
+            cleanOne = true;
+        }
+
+        pathfinder.target = path[0];
     }
 
     private void ReturnToLastKnownPosition()
@@ -174,7 +202,7 @@ public class DesicionAI : MonoBehaviour
                 if (pathfinder.target == lastKnownPlayerNode)
                 {
                     lastKnownPlayerNode = null;
-                    ChangeState(State.Patrol);
+                    ChangeState(State.HomeComing);
                     yield break;
                 }
 
