@@ -95,7 +95,7 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.yellow);
         render.SetPropertyBlock(block);
 
-        /*if (!anyGuardInReturnState)
+        if (!anyGuardInReturnState)
         {
             anyGuardInReturnState = true;
 
@@ -103,7 +103,7 @@ public class DesicionAI : MonoBehaviour
             {
                 guard.ChangeState(State.ReturnToLastKnownPosition);
             }
-        }*/
+        }
 
         if (pathfinder.current == null)
         {
@@ -138,7 +138,7 @@ public class DesicionAI : MonoBehaviour
 
     private IEnumerator FollowPathAndCheckForPlayer()
     {
-        int targetIndex = 0;
+        int targetIndex = 1;
 
         while (targetIndex < pathfinder.path.Count)
         {
