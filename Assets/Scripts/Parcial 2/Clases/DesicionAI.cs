@@ -245,6 +245,7 @@ public class DesicionAI : MonoBehaviour
         render.SetPropertyBlock(block);
         var dir = player.position - transform.position;
         character.velocity = dir.normalized * moveSpeed;
+        anyGuardInReturnState = false;
     }
 
     private void Attack()
