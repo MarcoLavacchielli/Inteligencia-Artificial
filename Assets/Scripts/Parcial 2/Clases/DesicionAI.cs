@@ -107,6 +107,7 @@ public class DesicionAI : MonoBehaviour
 
         if (pathfinder.current == null)
         {
+            lastKnownPlayerNode = grid.GetClosest(player.position);
             pathfinder.current = grid.GetClosest(transform.position);
         }
 
