@@ -105,7 +105,7 @@ public class DesicionAI : MonoBehaviour
 
     private void HomeComing()
     {
-        block.SetColor("_Color", Color.magenta);
+        /*block.SetColor("_Color", Color.magenta);
         render.SetPropertyBlock(block);
 
         if(cleanOne == false)
@@ -115,7 +115,44 @@ public class DesicionAI : MonoBehaviour
             cleanOne = true;
         }
 
-        pathfinder.target = path[0];
+        pathfinder.target = path[0];*/
+
+        if (cleanOne == false)
+        {
+            pathfinder.path.Clear();
+            Debug.Log("Clean");
+            cleanOne = true;
+        }
+
+        block.SetColor("_Color", Color.magenta);
+        render.SetPropertyBlock(block);
+
+        if (pathfinder.current == null)
+        {
+            lastKnownPlayerNode = grid.GetClosest(path[0].WorldPosition);
+            pathfinder.current = grid.GetClosest(transform.position);
+        }
+        lastKnownPlayerNode = grid.GetClosest(path[0].WorldPosition);
+
+        currentNodeIndex = 0;
+
+        pathfinder.target = lastKnownPlayerNode;
+        pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
+
+        pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
+
+        Vector3 current = transform.position;
+
+        /*foreach (var node in pathfinder.path)  // Linea para checkear la vuelta
+        {
+            Debug.DrawLine(current, node.WorldPosition, Color.red, 99);
+            current = node.WorldPosition;
+        }*/
+
+        character.velocity = Vector3.zero;
+
+        StartCoroutine(FollowPathAndCheckForPlayer());
+        pathfinder.UpdateTarget(lastKnownPlayerNode);
     }
 
     private void ReturnToLastKnownPosition()
@@ -148,11 +185,11 @@ public class DesicionAI : MonoBehaviour
 
         Vector3 current = transform.position;
 
-        foreach (var node in pathfinder.path)
+        /*foreach (var node in pathfinder.path)  //Linea para checkear la ida
         {
-            Debug.DrawLine(current, node.WorldPosition, Color.red, 99);
+            Debug.DrawLine(current, node.WorldPosition, Color.blue, 99);
             current = node.WorldPosition;
-        }
+        }*/
 
         character.velocity = Vector3.zero;
 
@@ -202,7 +239,7 @@ public class DesicionAI : MonoBehaviour
                 if (pathfinder.target == lastKnownPlayerNode)
                 {
                     lastKnownPlayerNode = null;
-                    ChangeState(State.HomeComing);
+                    //ChangeState(State.HomeComing);
                     yield break;
                 }
 
