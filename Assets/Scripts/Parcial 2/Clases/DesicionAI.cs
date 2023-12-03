@@ -105,17 +105,6 @@ public class DesicionAI : MonoBehaviour
 
     private void HomeComing()
     {
-        /*block.SetColor("_Color", Color.magenta);
-        render.SetPropertyBlock(block);
-
-        if(cleanOne == false)
-        {
-            pathfinder.path.Clear();
-            Debug.Log("Clean");
-            cleanOne = true;
-        }
-
-        pathfinder.target = path[0];*/
 
         if (cleanOne == false)
         {
@@ -228,7 +217,6 @@ public class DesicionAI : MonoBehaviour
 
             pathfinder.current = targetNode;
 
-            //targetIndex++;
 
             if (targetIndex < pathfinder.path.Count)
             {
@@ -239,7 +227,6 @@ public class DesicionAI : MonoBehaviour
                 if (pathfinder.target == lastKnownPlayerNode)
                 {
                     lastKnownPlayerNode = null;
-                    //ChangeState(State.HomeComing);
                     yield break;
                 }
 
