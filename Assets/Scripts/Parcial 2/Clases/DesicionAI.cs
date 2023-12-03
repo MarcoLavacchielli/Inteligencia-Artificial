@@ -162,7 +162,7 @@ public class DesicionAI : MonoBehaviour
 
             pathfinder.current = targetNode;
 
-            targetIndex++;
+            //targetIndex++;
 
             if (targetIndex < pathfinder.path.Count)
             {
