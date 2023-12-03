@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,12 +14,12 @@ public class Pathfinder : MonoBehaviour
     float moveTime = 2f;
 
     [SerializeField]
-    Vector3 offset = new(0, 1.5f, 0);
+    Vector3 offset = new Vector3(0, 1.5f, 0);
 
     [SerializeField]
-    public List<Node> path = new();
+    public List<Node> path = new List<Node>();
 
-    BFS<Vector2Int> bfs = new()
+    BFS<Vector2Int> bfs = new BFS<Vector2Int>()
     {
         Satisfies = (a, b) => a == b,
         Neighbours = cell => new Vector2Int[]
@@ -44,7 +43,6 @@ public class Pathfinder : MonoBehaviour
     {
         if (Application.isPlaying)
             Start();
-
     }
 
     public List<Node> CallPathfind(Node end)
@@ -53,6 +51,7 @@ public class Pathfinder : MonoBehaviour
         {
             PathAlgorithm.BFS => current.BFS(end),
             PathAlgorithm.DFS => current.DFS(end),
+            PathAlgorithm.AStar => current.AStar(end),
             _ => new List<Node>(),
         };
     }
@@ -89,6 +88,7 @@ public class Pathfinder : MonoBehaviour
                 + offset;
         }
     }
+
     public void UpdateTarget(Node newTarget)
     {
         target = newTarget;

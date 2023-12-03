@@ -198,6 +198,36 @@ public class Node : MonoBehaviour
         return new List<Node>();
     }
 
+    
+
+    public bool Skip(Node from, Node to)
+    {
+        var dir = (to.transform.position - from.transform.position);
+        return !Physics.Raycast(
+            from.transform.position, dir,
+            dir.magnitude, wallMask
+            );
+    }
+
+    public List<Node> ThetaStar(Node target)
+    {
+        var path = AStar(target);
+
+        if (path.Count == 0) { return path; }
+
+        int current = 0;
+
+        while (current + 2 < path.Count)
+        {
+            if (Skip(path[current], path[current + 2]))
+                path.RemoveAt(current + 1);
+            else
+                current++;
+        }
+
+        return path;
+    }
+
     public List<Node> AStar(Node target)
     {
         var pending = new PriorityQueueMin<Node>();
@@ -239,33 +269,6 @@ public class Node : MonoBehaviour
         return new List<Node>();
     }
 
-    public bool Skip(Node from, Node to)
-    {
-        var dir = (to.transform.position - from.transform.position);
-        return !Physics.Raycast(
-            from.transform.position, dir,
-            dir.magnitude, wallMask
-            );
-    }
-
-    public List<Node> ThetaStar(Node target)
-    {
-        var path = AStar(target);
-
-        if (path.Count == 0) { return path; }
-
-        int current = 0;
-
-        while (current + 2 < path.Count)
-        {
-            if (Skip(path[current], path[current + 2]))
-                path.RemoveAt(current + 1);
-            else
-                current++;
-        }
-
-        return path;
-    }
 }
 
 
@@ -339,5 +342,5 @@ class PriorityQueueMax<T>
 
 public enum PathAlgorithm
 {
-    BFS, DFS, Dijkstra,
+    BFS, DFS, Dijkstra, AStar,
 }
