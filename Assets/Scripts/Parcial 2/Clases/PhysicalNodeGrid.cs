@@ -30,8 +30,21 @@ public class PhysicalNodeGrid : MonoBehaviour
         int x = Mathf.RoundToInt(relative.x / spacing);
         int y = Mathf.RoundToInt(relative.z / spacing);
 
-        if (TryGetNode(x, y, out var n))
+        Node n;
+        if (TryGetNode(x, y, out n))
             return n;
+        if (TryGetNode(x + 1, y, out n))
+            return n;
+        if (TryGetNode(x - 1, y, out n))
+            return n;
+        if (TryGetNode(x, y + 1, out n))
+            return n;
+        if (TryGetNode(x, y - 1, out n))
+            return n;
+
+        /*if (TryGetNode(x, y, out var n))
+            return n;
+        */
         return null;
     }
 

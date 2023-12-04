@@ -48,14 +48,14 @@ public class DesicionAI : MonoBehaviour
         {
             case State.Patrol:
                 Patrol();
-                if (detect.InFieldOfView(player.position))
+                if (detect.InLineOfSight(player.position))
                 {
                     ChangeState(State.Chase);
                 }
                 break;
             case State.Chase:
                 Chase();
-                if (!detect.InFieldOfView(player.position))
+                if (!detect.InLineOfSight(player.position))
                 {
                     ChangeState(State.ReturnToLastKnownPosition);
                 }
@@ -73,18 +73,18 @@ public class DesicionAI : MonoBehaviour
                 break;
             case State.ReturnToLastKnownPosition:
                 ReturnToLastKnownPosition();
-                if (detect.InFieldOfView(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
+                if (detect.InLineOfSight(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
                 {
                     ChangeState(State.HomeComing);
                 }
-                else if (detect.InFieldOfView(player.position))
+                else if (detect.InLineOfSight(player.position))
                 {
                     ChangeState(State.Chase);
                 }
                 break;
             case State.HomeComing:
                 HomeComing();
-                if (detect.InFieldOfView(path[0].WorldPosition) && Vector3.Distance(transform.position, path[0].WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
+                if (detect.InLineOfSight(path[0].WorldPosition) && Vector3.Distance(transform.position, path[0].WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
                 {
                     ChangeState(State.Patrol);
                 }
