@@ -15,6 +15,8 @@ public class LiderController : MonoBehaviour
 
     int currentNodeIndex = 0;
 
+    [SerializeField] private bool cleanOne = true;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -30,21 +32,22 @@ public class LiderController : MonoBehaviour
                 {
                     // Cambia el color del nodo a verde
                     clickedNode.ChangeNodeColor(Color.green);
-
-                    // Limpiar el camino actual y establecer un nuevo camino
-                    pathfinder.path.Clear();
-                    pathfinder.current = grid.GetClosest(transform.position);
-                    pathfinder.target = clickedNode;
-                    pathfinder.path = pathfinder.CallPathfind(clickedNode);
-
-                    StartCoroutine(FollowPathAndCheckForPlayer());
                 }
             }
+
+            MoveByPathFinder();
         }
     }
 
     private void MoveByPathFinder()
     {
+        if (cleanOne == false)
+        {
+            pathfinder.path.Clear();
+            Debug.Log("Clean");
+            cleanOne = true;
+        }
+
         if (pathfinder.current == null)
         {
             lastKnownPlayerNode = grid.GetClosest(clickedNode.WorldPosition);
@@ -95,20 +98,12 @@ public class LiderController : MonoBehaviour
             }
             else
             {
-                if (pathfinder.target == lastKnownPlayerNode)
-                {
-                    lastKnownPlayerNode = null;
-                    yield break;
-                }
+                // Player llegó al nodo destino, limpiar el path
+                pathfinder.path.Clear();
+                pathfinder.current = null;
+                lastKnownPlayerNode = null;
 
-                pathfinder.path = pathfinder.CallPathfind(pathfinder.target);
-
-                if (pathfinder.path.Count == 0)
-                {
-                    yield break;
-                }
-
-                targetIndex = 0;
+                yield break; // Salir del coroutine ya que no hay más nodos en el path
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -116,5 +111,6 @@ public class LiderController : MonoBehaviour
 
         character.velocity = Vector3.zero;
     }
+
 
 }
