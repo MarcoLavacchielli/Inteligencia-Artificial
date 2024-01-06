@@ -15,6 +15,8 @@ public class LiderController : MonoBehaviour
 
     int currentNodeIndex = 0;
 
+    [SerializeField] private bool cleanOne = true;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -39,11 +41,12 @@ public class LiderController : MonoBehaviour
 
     private void MoveByPathFinder()
     {
-
-        pathfinder.path.Clear();
-        pathfinder.current = null;
-        lastKnownPlayerNode = null;
-
+        if (cleanOne == false)
+        {
+            pathfinder.path.Clear();
+            Debug.Log("Clean");
+            cleanOne = true;
+        }
 
         if (pathfinder.current == null)
         {
@@ -96,9 +99,9 @@ public class LiderController : MonoBehaviour
             else
             {
                 // Player llegó al nodo destino, limpiar el path
-                /*pathfinder.path.Clear();
+                pathfinder.path.Clear();
                 pathfinder.current = null;
-                lastKnownPlayerNode = null;*/
+                lastKnownPlayerNode = null;
 
                 yield break; // Salir del coroutine ya que no hay más nodos en el path
             }
