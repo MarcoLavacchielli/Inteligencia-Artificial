@@ -30,16 +30,10 @@ public class LiderController : MonoBehaviour
                 {
                     // Cambia el color del nodo a verde
                     clickedNode.ChangeNodeColor(Color.green);
-
-                    // Limpiar el camino actual y establecer un nuevo camino
-                    pathfinder.path.Clear();
-                    pathfinder.current = grid.GetClosest(transform.position);
-                    pathfinder.target = clickedNode;
-                    pathfinder.path = pathfinder.CallPathfind(clickedNode);
-
-                    StartCoroutine(FollowPathAndCheckForPlayer());
                 }
             }
+
+            MoveByPathFinder();
         }
     }
 
