@@ -269,18 +269,6 @@ public class Node : MonoBehaviour
         return new List<Node>();
     }
 
-    public void ChangeNodeColor(Color color)
-    {
-        this.color = color;
-
-        if (TryGetComponent<MeshRenderer>(out var rend))
-        {
-            var block = new MaterialPropertyBlock();
-            block.SetColor("_Color", color);
-            rend.SetPropertyBlock(block);
-        }
-    }
-
 }
 
 
