@@ -39,11 +39,9 @@ public class LiderController : MonoBehaviour
 
     private void MoveByPathFinder()
     {
-
         pathfinder.path.Clear();
         pathfinder.current = null;
         lastKnownPlayerNode = null;
-
 
         if (pathfinder.current == null)
         {
@@ -95,10 +93,10 @@ public class LiderController : MonoBehaviour
             }
             else
             {
-                // Player llegó al nodo destino, limpiar el path
-                /*pathfinder.path.Clear();
+                // Player llegó al nodo destino, limpiar el path y detener al personaje
+                pathfinder.path.Clear();
                 pathfinder.current = null;
-                lastKnownPlayerNode = null;*/
+                lastKnownPlayerNode = null;
 
                 yield break; // Salir del coroutine ya que no hay más nodos en el path
             }
@@ -106,8 +104,7 @@ public class LiderController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+        // Detener al personaje al final del camino
         character.velocity = Vector3.zero;
     }
-
-
 }
