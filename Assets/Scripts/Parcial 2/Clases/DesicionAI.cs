@@ -8,7 +8,7 @@ public class DesicionAI : MonoBehaviour
     [SerializeField] Character character;
     [SerializeField] PhysicalNodeGrid grid;
     [SerializeField] float moveSpeed = 4f;
-    [SerializeField] Transform player;
+    [SerializeField] Transform enemy;
     [SerializeField] Renderer render;
     [SerializeField] List<Node> path = new List<Node>();
     int currentNodeIndex = 0;
@@ -16,7 +16,8 @@ public class DesicionAI : MonoBehaviour
     public State currentState;
     [SerializeField] Pathfinder pathfinder;
     private bool playerInSight = false;
-    private Node lastKnownPlayerNode;
+    private Node lastKnownEnemyNode;
+    private Node clickedNode;
     public static List<DesicionAI> allGuardians = new List<DesicionAI>();
     float attackDistance = 2.0f;
     private static bool anyGuardInReturnState = false;
@@ -24,11 +25,10 @@ public class DesicionAI : MonoBehaviour
 
     public enum State
     {
-        Patrol,
+        LiderMove,
         Chase,
         Attack,
         ReturnToLastKnownPosition,
-        HomeComing
     }
 
     private void Awake()
@@ -46,49 +46,38 @@ public class DesicionAI : MonoBehaviour
     {
         switch (currentState)
         {
-            case State.Patrol:
-                Patrol();
-                if (detect.InLineOfSight(player.position))
+            case State.LiderMove:
+                LiderMove();
+                if (detect.InLineOfSight(enemy.position))
                 {
                     ChangeState(State.Chase);
                 }
                 break;
             case State.Chase:
                 Chase();
-                if (!detect.InLineOfSight(player.position))
+                if (!detect.InLineOfSight(enemy.position))
                 {
                     ChangeState(State.ReturnToLastKnownPosition);
                 }
-                else if (Vector3.Distance(transform.position, player.position) < attackDistance)
+                else if (Vector3.Distance(transform.position, enemy.position) < attackDistance)
                 {
                     ChangeState(State.Attack);
                 }
                 break;
             case State.Attack:
                 Attack();
-                if (Vector3.Distance(transform.position, player.position) > attackDistance)
+                if (Vector3.Distance(transform.position, enemy.position) > attackDistance)
                 {
                     ChangeState(State.Chase);
                 }
                 break;
             case State.ReturnToLastKnownPosition:
                 ReturnToLastKnownPosition();
-                if (detect.InLineOfSight(lastKnownPlayerNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownPlayerNode.WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
+                if (detect.InLineOfSight(lastKnownEnemyNode.WorldPosition) && Vector3.Distance(transform.position, lastKnownEnemyNode.WorldPosition) < 1.0f && !detect.InFieldOfView(enemy.position))
                 {
-                    ChangeState(State.HomeComing);
+                    ChangeState(State.LiderMove);
                 }
-                else if (detect.InLineOfSight(player.position))
-                {
-                    ChangeState(State.Chase);
-                }
-                break;
-            case State.HomeComing:
-                HomeComing();
-                if (detect.InLineOfSight(path[0].WorldPosition) && Vector3.Distance(transform.position, path[0].WorldPosition) < 1.0f && !detect.InFieldOfView(player.position))
-                {
-                    ChangeState(State.Patrol);
-                }
-                else if (detect.InFieldOfView(player.position))
+                else if (detect.InLineOfSight(enemy.position))
                 {
                     ChangeState(State.Chase);
                 }
@@ -98,12 +87,63 @@ public class DesicionAI : MonoBehaviour
         }
     }
 
+    private void LiderMove()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                clickedNode = grid.GetClosest(hit.point);
+
+                if (clickedNode != null)
+                {
+                    clickedNode.ChangeNodeColor(Color.green);
+                }
+            }
+
+            PathMove();
+        }
+    }
+
+    private void PathMove()
+    {
+        pathfinder.path.Clear();
+        pathfinder.current = null;
+        lastKnownEnemyNode = null;
+
+        if (pathfinder.current == null)
+        {
+            lastKnownEnemyNode = grid.GetClosest(clickedNode.WorldPosition);
+            pathfinder.current = grid.GetClosest(transform.position);
+        }
+
+        currentNodeIndex = 0;
+
+        pathfinder.target = lastKnownEnemyNode;
+        pathfinder.path = pathfinder.CallPathfind(lastKnownEnemyNode);
+
+        if (pathfinder.path.Count > 0)
+        {
+            pathfinder.current = pathfinder.path[0];
+        }
+        else
+        {
+            return;
+        }
+
+        StartCoroutine(FollowPathAndCheckForPlayer());
+        pathfinder.UpdateTarget(lastKnownEnemyNode);
+    }
+
     private void ChangeState(State newState)
     {
         currentState = newState;
     }
 
-    private void HomeComing()
+    /*private void HomeComing()
     {
 
         if (cleanOne == false)
@@ -118,15 +158,15 @@ public class DesicionAI : MonoBehaviour
 
         if (pathfinder.current == null)
         {
-            lastKnownPlayerNode = grid.GetClosest(path[0].WorldPosition);
+            lastKnownEnemyNode = grid.GetClosest(path[0].WorldPosition);
             pathfinder.current = grid.GetClosest(transform.position);
         }
-        lastKnownPlayerNode = grid.GetClosest(path[0].WorldPosition);
+        lastKnownEnemyNode = grid.GetClosest(path[0].WorldPosition);
 
         currentNodeIndex = 0;
 
-        pathfinder.target = lastKnownPlayerNode;
-        pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
+        pathfinder.target = lastKnownEnemyNode;
+        pathfinder.path = pathfinder.CallPathfind(lastKnownEnemyNode);
 
         pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
 
@@ -136,13 +176,13 @@ public class DesicionAI : MonoBehaviour
         {
             Debug.DrawLine(current, node.WorldPosition, Color.red, 99);
             current = node.WorldPosition;
-        }*/
+        }
 
         character.velocity = Vector3.zero;
 
         StartCoroutine(FollowPathAndCheckForPlayer());
-        pathfinder.UpdateTarget(lastKnownPlayerNode);
-    }
+        pathfinder.UpdateTarget(lastKnownEnemyNode);
+    }*/
 
     private void ReturnToLastKnownPosition()
     {
@@ -161,14 +201,14 @@ public class DesicionAI : MonoBehaviour
 
         if (pathfinder.current == null)
         {
-            lastKnownPlayerNode = grid.GetClosest(player.position);
+            lastKnownEnemyNode = grid.GetClosest(enemy.position);
             pathfinder.current = grid.GetClosest(transform.position);
         }
 
         currentNodeIndex = 0;
 
-        pathfinder.target = lastKnownPlayerNode;
-        pathfinder.path = pathfinder.CallPathfind(lastKnownPlayerNode);
+        pathfinder.target = lastKnownEnemyNode;
+        pathfinder.path = pathfinder.CallPathfind(lastKnownEnemyNode);
 
         pathfinder.current = pathfinder.path.Count > 0 ? pathfinder.path[0] : null;
 
@@ -183,11 +223,11 @@ public class DesicionAI : MonoBehaviour
         character.velocity = Vector3.zero;
 
         StartCoroutine(FollowPathAndCheckForPlayer());
-        pathfinder.UpdateTarget(lastKnownPlayerNode);
+        pathfinder.UpdateTarget(lastKnownEnemyNode);
 
         foreach (DesicionAI guard in allGuardians)
         {
-            guard.lastKnownPlayerNode = lastKnownPlayerNode;
+            guard.lastKnownEnemyNode = lastKnownEnemyNode;
         }
     }
 
@@ -204,42 +244,23 @@ public class DesicionAI : MonoBehaviour
                 Vector3 dir = (targetNode.transform.position - transform.position);
                 character.velocity = dir.normalized * moveSpeed;
 
-                if (detect.InFieldOfView(player.position))
-                {
-                    ChangeState(State.Chase);
-                    yield break;
-                }
-
                 yield return null;
             }
 
             character.velocity = Vector3.zero;
 
-            pathfinder.current = targetNode;
-
-
-            if (targetIndex < pathfinder.path.Count)
+            if (targetIndex < pathfinder.path.Count - 1)
             {
-                pathfinder.target = pathfinder.path[targetIndex];
+                targetIndex++;
+                pathfinder.current = pathfinder.path[targetIndex - 1];
             }
             else
             {
-                if (pathfinder.target == lastKnownPlayerNode)
-                {
-                    lastKnownPlayerNode = null;
-                    yield break;
-                }
+                pathfinder.path.Clear();
+                pathfinder.current = null;
+                lastKnownEnemyNode = null;
 
-                pathfinder.target = path[0];
-
-                pathfinder.path = pathfinder.CallPathfind(pathfinder.target);
-
-                if (pathfinder.path.Count == 0)
-                {
-                    yield break;
-                }
-
-                targetIndex = 0;
+                yield break;
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -248,7 +269,7 @@ public class DesicionAI : MonoBehaviour
         character.velocity = Vector3.zero;
     }
 
-    private void Patrol()
+    /*private void Patrol()
     {
         block.SetColor("_Color", Color.blue);
         render.SetPropertyBlock(block);
@@ -284,7 +305,7 @@ public class DesicionAI : MonoBehaviour
         {
             character.velocity = Vector3.zero;
         }
-    }
+    }*/
 
     private void Chase()
     {
@@ -292,10 +313,10 @@ public class DesicionAI : MonoBehaviour
         pathfinder.current = null;
         pathfinder.target = null;
         pathfinder.path.Clear();
-        lastKnownPlayerNode = grid.GetClosest(player.position);
+        lastKnownEnemyNode = grid.GetClosest(enemy.position);
         block.SetColor("_Color", Color.green);
         render.SetPropertyBlock(block);
-        var dir = player.position - transform.position;
+        var dir = enemy.position - transform.position;
         character.velocity = dir.normalized * moveSpeed;
         anyGuardInReturnState = false;
     }

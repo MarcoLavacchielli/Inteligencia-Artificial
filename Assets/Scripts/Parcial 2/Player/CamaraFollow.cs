@@ -6,7 +6,7 @@ public class CamaraFollow : MonoBehaviour
 {
 
     [SerializeField] Transform target; // target es el character
-    Vector3 offset; //diferencia de camara y player
+    Vector3 offset; //diferencia de camara y enemy
     [SerializeField] Vector3 offsetPublico; // cambio publico a la camara
     Vector3 final;
     //[SerializeField] float lerpspeed = 1;
