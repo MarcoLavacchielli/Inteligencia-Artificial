@@ -572,8 +572,12 @@ MonoBehaviour:
   enemy: {fileID: 0}
   render: {fileID: 670398834}
   path: []
+  health: 100
+  fleeHealthThreshold: 30
   currentState: 0
   pathfinder: {fileID: 670398830}
+  isMoving: 0
+  fleeTime: 3
 --- !u!114 &670398833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1588,8 +1592,12 @@ MonoBehaviour:
   enemy: {fileID: 670398836}
   render: {fileID: 4737794906265166665}
   path: []
+  health: 100
+  fleeHealthThreshold: 30
   currentState: 0
   pathfinder: {fileID: 4737794906265166672}
+  isMoving: 0
+  fleeTime: 3
 --- !u!114 &4737794906265166672
 MonoBehaviour:
   m_ObjectHideFlags: 0

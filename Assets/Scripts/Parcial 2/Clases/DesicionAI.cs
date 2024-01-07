@@ -26,6 +26,8 @@ public class DesicionAI : MonoBehaviour
     bool cleanOne = false;
     [SerializeField] private bool isMoving = false;
 
+    [SerializeField] private float fleeTime = 3f;
+
 
     public enum State
     {
@@ -93,8 +95,10 @@ public class DesicionAI : MonoBehaviour
                 break;
             case State.Flee:
                 Flee();
-                if (health > fleeHealthThreshold)
+                fleeTime -= Time.deltaTime;
+                if (fleeTime <= 0)
                 {
+                    fleeTime = 3f;
                     ChangeState(State.LiderMove);
                 }
                 break;
@@ -105,6 +109,10 @@ public class DesicionAI : MonoBehaviour
 
     private void LiderMove()
     {
+
+        block.SetColor("_Color", Color.black);
+        render.SetPropertyBlock(block);
+
         if (Input.GetMouseButtonDown(0) && !isMoving)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -344,14 +352,20 @@ public class DesicionAI : MonoBehaviour
     }
     private void Flee()
     {
+        block.SetColor("_Color", Color.cyan);
+        render.SetPropertyBlock(block);
+
         Vector3 dirToEnemy = transform.position - enemy.position;
-
         dirToEnemy.y = 0;
-
         character.velocity = dirToEnemy.normalized * moveSpeed;
 
         Vector3 newPosition = transform.position;
         newPosition.y = Mathf.Clamp(newPosition.y, 0, newPosition.y);
         transform.position = newPosition;
+
+        if (fleeTime <= 0.1)
+        {
+            character.velocity = Vector3.zero;
+        }
     }
 }
