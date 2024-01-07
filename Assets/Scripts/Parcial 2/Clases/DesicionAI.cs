@@ -22,6 +22,8 @@ public class DesicionAI : MonoBehaviour
     float attackDistance = 2.0f;
     private static bool anyGuardInReturnState = false;
     bool cleanOne = false;
+    [SerializeField] private bool isMoving = false;
+
 
     public enum State
     {
@@ -89,7 +91,7 @@ public class DesicionAI : MonoBehaviour
 
     private void LiderMove()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isMoving)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -110,10 +112,6 @@ public class DesicionAI : MonoBehaviour
 
     private void PathMove()
     {
-        pathfinder.path.Clear();
-        pathfinder.current = null;
-        lastKnownEnemyNode = null;
-
         if (pathfinder.current == null)
         {
             lastKnownEnemyNode = grid.GetClosest(clickedNode.WorldPosition);
@@ -233,6 +231,7 @@ public class DesicionAI : MonoBehaviour
 
     private IEnumerator FollowPathAndCheckForPlayer()
     {
+        isMoving = true;
         int targetIndex = 1;
 
         while (targetIndex < pathfinder.path.Count)
@@ -258,8 +257,9 @@ public class DesicionAI : MonoBehaviour
             {
                 pathfinder.path.Clear();
                 pathfinder.current = null;
+                pathfinder.target = null;
                 lastKnownEnemyNode = null;
-
+                isMoving = false;
                 yield break;
             }
 
@@ -267,6 +267,7 @@ public class DesicionAI : MonoBehaviour
         }
 
         character.velocity = Vector3.zero;
+        isMoving = false;
     }
 
     /*private void Patrol()
