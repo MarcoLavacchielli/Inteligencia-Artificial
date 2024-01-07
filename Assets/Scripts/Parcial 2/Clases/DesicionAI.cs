@@ -344,7 +344,14 @@ public class DesicionAI : MonoBehaviour
     }
     private void Flee()
     {
-        var dirToEnemy = transform.position - enemy.position;
+        Vector3 dirToEnemy = transform.position - enemy.position;
+
+        dirToEnemy.y = 0;
+
         character.velocity = dirToEnemy.normalized * moveSpeed;
+
+        Vector3 newPosition = transform.position;
+        newPosition.y = Mathf.Clamp(newPosition.y, 0, newPosition.y);
+        transform.position = newPosition;
     }
 }
