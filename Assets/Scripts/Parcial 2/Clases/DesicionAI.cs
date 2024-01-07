@@ -11,6 +11,8 @@ public class DesicionAI : MonoBehaviour
     [SerializeField] Transform enemy;
     [SerializeField] Renderer render;
     [SerializeField] List<Node> path = new List<Node>();
+    [SerializeField] float health = 100f;
+    [SerializeField] float fleeHealthThreshold = 30f;
     int currentNodeIndex = 0;
     MaterialPropertyBlock block;
     public State currentState;
@@ -31,6 +33,7 @@ public class DesicionAI : MonoBehaviour
         Chase,
         Attack,
         ReturnToLastKnownPosition,
+        Flee,
     }
 
     private void Awake()
@@ -72,6 +75,10 @@ public class DesicionAI : MonoBehaviour
                 {
                     ChangeState(State.Chase);
                 }
+                else if (detect.InLineOfSight(enemy.position) && health <= fleeHealthThreshold)
+                {
+                    ChangeState(State.Flee);
+                }
                 break;
             case State.ReturnToLastKnownPosition:
                 ReturnToLastKnownPosition();
@@ -82,6 +89,13 @@ public class DesicionAI : MonoBehaviour
                 else if (detect.InLineOfSight(enemy.position))
                 {
                     ChangeState(State.Chase);
+                }
+                break;
+            case State.Flee:
+                Flee();
+                if (health > fleeHealthThreshold)
+                {
+                    ChangeState(State.LiderMove);
                 }
                 break;
             default:
@@ -327,5 +341,10 @@ public class DesicionAI : MonoBehaviour
         block.SetColor("_Color", Color.red);
         render.SetPropertyBlock(block);
         character.velocity = Vector3.zero;
+    }
+    private void Flee()
+    {
+        var dirToEnemy = transform.position - enemy.position;
+        character.velocity = dirToEnemy.normalized * moveSpeed;
     }
 }
