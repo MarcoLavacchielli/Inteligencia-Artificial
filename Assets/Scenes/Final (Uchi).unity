@@ -530,7 +530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   current: {fileID: 0}
   target: {fileID: 0}
-  algorithm: 3
+  algorithm: 4
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []
@@ -1612,7 +1612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   current: {fileID: 0}
   target: {fileID: 0}
-  algorithm: 3
+  algorithm: 4
   moveTime: 2
   offset: {x: 0, y: 1.5, z: 0}
   path: []

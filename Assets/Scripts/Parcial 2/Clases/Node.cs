@@ -354,5 +354,5 @@ class PriorityQueueMax<T>
 
 public enum PathAlgorithm
 {
-    BFS, DFS, Dijkstra, AStar,
+    BFS, DFS, Dijkstra, AStar, ThetaStar,
 }

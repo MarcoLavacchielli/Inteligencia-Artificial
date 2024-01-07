@@ -52,6 +52,7 @@ public class Pathfinder : MonoBehaviour
             PathAlgorithm.BFS => current.BFS(end),
             PathAlgorithm.DFS => current.DFS(end),
             PathAlgorithm.AStar => current.AStar(end),
+            PathAlgorithm.ThetaStar => current.ThetaStar(end),
             _ => new List<Node>(),
         };
     }
